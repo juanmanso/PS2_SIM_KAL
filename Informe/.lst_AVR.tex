@@ -1,0 +1,119 @@
+%% Configuración por default de los Listings de Latex
+
+	\definecolor{myGreen}{rgb}{0,0.6,0}
+	\definecolor{myGray}{rgb}{0.5,0.5,0.5}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+%%
+%% avrasm definition (c) 2005 nils michelsen
+%% modified 2013 by edward shin
+%%
+\lstdefinelanguage[AVR]{Assembler} [x86masm]{Assembler}{
+morekeywords=[1]{adc,add,adiw,sub,subi,sbc,sbiw,and,andi,or,ori,eor,com,
+                neg,sbr,cbr,inc,dec,tst,clr,ser,mul,muls,mulsu,fmul,fmuls,
+                fmulsu,rjmp,ijmp,eijmp,jmp,rcall,icall,eicall,call,ret,
+                reti,cpse,cp,cpc,cpi,sbrc,sbrs,sbic,sbis,brbs,brbc,breq,
+                brne,brcs,brcc,brsh,brlo,brmi,brpl,brge,brlt,brhs,brhc,
+                brts,brtc,brvs,brvc,brie,brid,mov,movw,ldi,lds,ld,ldd,st,
+                sts,std,lpm,elpm,spm,in,out,push,pop,lsl,lsr,rol,ror,asr,
+                swap,bset,bclr,sbi,cbi,bst,bld,sec,sen,cln,sez,clz,sei,cli,
+                ses,cls,sev,clv,set,clt,seh,clh,break,nop,sleep,wdr},%
+morekeywords=[2]{x,y,z,r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,
+                r15,r16,r17,r18,r19,r20,r21,r22,r23,r24,r25,r26,r27,r28,r29,
+                r30,r31,tccr3a,tccr3b,tcnt3h,tcnt3l,ocr3ah,ocr3al,ocr3bh,
+                ocr3bl,icr3h,icr3l,etimsk,etifr,pcmsk1,pcmsk0,clkpr,sreg,
+                sph,spl,ucsr1c,ubrr1h,eimsk,gimsk,gicr,gifr,timsk,tifr,
+                spmcr,emcucr,mcucsr,tccr0,tcnt0,ocr0,sfior,tccr1a,tccr1b,
+                tcnt1h,tcnt1l,ocr1ah,ocr1al,ocr1bh,ocr1bl,tccr2,assr,icr1h,
+                icr1l,tcnt2,ocr2,wdtcr,ubrrhi,ucsroc,ubrroh,eearh,eearl,
+                eedr,eecr,porta,ddra,pina,portb,ddrb,pinb,portc,ddrc,pinc,
+                portd,ddrd,pind,spdr,spsr,spcr,udr0,udr,ucsr0a,usrucsr0b,ucr,
+                ubrr0,ubrr0l,ubrr,acsr,porte,ddre,pine,osccal,udr1,ucsr1a,
+                ucsr1b,ubrr1,ubrr1l,com3a1,com3a0,com3b1,com3b0,foc3a,foc3b,
+                wgm31,wgm30,icnc3,ices3,wgm33,wgm32,cs32,cs31,cs30,icf3,
+                ocf3a,ocf3b,tov3,pcint15,pcint14,pcint13,pcint12,pcint11,
+                pcint10,pcint9,pcint8,pcint7,pcint6,pcint5,pcint4,pcint3,
+                pcint2,pcint1,pcint0,clkpce,clkps3,clkps2,clkps1,clkps0,int1,
+                int0,int2,pcie1,pcie0,ivsel,ivce,intf1,intf0,intf2,pcif1,pcif0,
+                toie1,ocie1a,ocie1b,ocie2,ticie1,toie2,toie0,ocie0,tov1,ocf1a,
+                ocf1b,ocf2,icf1,tov2,tov0,ocf0,spmie,rwwsb,asb,rwwsre,asre,
+                blbset,pgwrt,pgers,spmen,sm0,srl2,srl1,srl0,srw01,srw00,srw11,
+                isc2,sre,srw,srw10,se,sm,sm1,isc11,isc10,isc01,isc00,jtd,sm2,
+                jtrf,wdrf,borf,extrf,porf,foc0,wgm00,pwm0,com01,com00,wgm01,
+                ctc0,cs02,cs01,cs00,tsm,xmbk,xmm2,xmm1,xmm0,pud,psr2,psr10,psr1,
+                psr0,com1a1,com1a0,com1b1,com1b0,foc1a,foc1b,pwm11,wgm11,pwm10,
+                wgm10,icnc1,ices1,ctc11,wgm13,ctc10,wgm12,ctc1,cs12,cs11,cs10,
+                foc2,wgm20,pwm2,com21,com20,wgm21,ctc2,cs22,cs21,cs20,as2,
+                tcn2ub,ocr2ub,tcr2ub,wdtoe,wdce,wde,wdp2,wdp1,wdp0,eerie,eemwe,
+                eewe,eere,porta7,porta6,porta5,porta4,porta3,porta2,porta1,porta0,
+                dda7,dda6,dda5,dda4,dda3,dda2,dda1,dda0,pina7,pina6,pina5,pina4,
+                pina3,pina2,pina1,pina0,portb7,portb6,portb5,portb4,portb3,portb2,
+                portb1,portb0,ddb7,ddb6,ddb5,ddb4,ddb3,ddb2,ddb1,ddb0,pinb7,pinb6,
+                pinb5,pinb4,pinb3,pinb2,pinb1,pinb0,portc7,portc6,portc5,
+                portc4,portc3,portc2,portc1,portc0,ddc7,ddc6,ddc5,ddc4,
+                ddc3,ddc2,ddc1,ddc0,pinc7,pinc6,pinc5,pinc4,pinc3,pinc2,
+                pinc1,pinc0,portd7,portd6,portd5,portd4,portd3,portd2,
+                portd1,portd0,ddd7,ddd6,ddd5,ddd4,ddd3,ddd2,ddd1,
+                ddd0,pind7,pind6,pind5,pind4,pind3,pind2,pind1,pind0,
+                porte2,porte1,porte0,dde2,dde1,dde0,pine2,pine1,pine0,
+                rxc,txc,udre,fe,or,u2x,rxc0,txc0,udre0,fe0,or0,dor0,
+                pe0,u2x0,mpcm0,rxc1,txc1,udre1,fe1,or1,dor1,pe1,u2x1,
+                mpcm1,spie,spe,dord,mstr,cpol,cpha,spr1,spr0,spif,wcol,spi2x,
+                rxcie,txcie,udrie,rxen,txen,chr9,ucsz2,rxb8,txb8,rxcie0,txcie0,
+                udrie0,rxen0,txen0,chr90,ucsz02,rxb80,txb80,rxcie1,txcie1,
+                udrie1,rxen1,txen1,chr91,ucsz12,rxb81,txb81,ursel0,umsel0,
+                upm01,upm00,usbs0,ucsz01,ucsz00,ucpol0,ursel1,umsel1,upm11,
+                upm10,usbs1,ucsz11,ucsz10,ucpol1,acd,ainbg,acbg,aco,aci,acie,
+                acic,acis1,acis0,blb12,blb11,blb02,blb01,xl,xh,yl,yh,zl,
+                zh,ramend,eepromend,flashend,smallbootstart,secondbootstart,
+                thirdbootstart,largebootstart,bootstart,pagesize,int0addr,
+                int1addr,int2addr,pcint0addr,pcint1addr,timer3captaddr,
+                timer3compaaddr,timer3compbaddr,timer3ovfaddr,timer2compaddr,
+                timer2ovfaddr,timer1captaddr,timer1compaaddr,timer1compbaddr,
+                timer1ovfaddr,timer0compaddr,timer0ovfaddr,spistcaddr,
+                usart0rxcaddr,usart1rxcaddr,usart0udreaddr,usart1udreaddr,
+                usart0txcaddr,usart1txcaddr,ee_rdyaddr,ana_cmpaddr,
+                spm_rdyadd,mcucr,ubrr0h,ucsr0c,ucsr0b},%
+morekeywords=[3]{org,def,equ,db,include,dseg,cseg,eseg},%
+alsoletter={.,0,1,2,3,4,5,6,7,8,9},%
+alsodigit={?},%
+sensitive=false,%
+morecomment=[l];,%
+}[keywords,comments,strings]%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\lstset{
+		inputencoding=utf8,
+		extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+%
+		language=[AVR]Assembler,		 	 %% the language of the code
+		frame=single,	                 %% adds a frame around the code
+		rulecolor=\color{Black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+		basicstyle=\ttfamily\small,        % the size of the fonts that are used for the code
+		backgroundcolor=\color{White},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+		keywordstyle=\color{Blue}\bf,       % keyword style
+%		keywordstyle[2]=[2]\color{Orange},	%keywords 2 (registers & .inc definitions)
+%		keywordstyle[3]=[3]\color{Red},		% keywords 3 (preprocessor)
+%		
+		commentstyle=\itshape\color{myGreen},    % comment style
+		stringstyle=\color{Purple},     % string literal style
+		showstringspaces=false,          % underline spaces within strings only
+		tabsize=4,	                   % sets default tabsize to 2 space
+%
+%
+		breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+		breaklines=true,                 %% sets automatic line breaking
+		captionpos=t,                    %% sets the caption-position to top 
+		deletekeywords={...},            % if you want to delete keywords from the given language
+		escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+		keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+%
+		numbers=left,                    %% where to put the line-numbers; possible values are (none, left, right)
+		numbersep=5pt,                   %% how far the line-numbers are from the code
+		numberstyle=\tiny\color{myGray}, % the style that is used for the line-numbers
+		stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+%
+		showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+		showtabs=false,                  % show tabs within strings adding particular underscores
+		title={\protect\filename@parse{\lstname}\protect\filename@base\text{.}\protect\filename@ext}	 %% show the filename of files included with \lstinputlisting; also try caption instead of title
+	}

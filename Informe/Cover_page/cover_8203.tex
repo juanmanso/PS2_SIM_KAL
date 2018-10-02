@@ -1,0 +1,56 @@
+
+
+% Configuro la carátula
+
+
+		\title{{\Large{\textbf{\myTitle}}} \\
+				\vspace{0.4cm}
+				\normalsize\underline{\textbf{\mySubtitle}} \\
+		\author{\small{\textsc{\mySubject}}}}
+		\date{\small{\myTimePeriod}}
+	\maketitle
+
+
+\ifPutgroup
+	\begin{tabbing}
+\hspace{6.7cm}\=\+\texttt{Grupo Nº\myGroupNumber}\hspace{5cm}\=
+	\end{tabbing}
+\fi
+	\begin{tabbing}
+
+		\hspace{2cm} \MembersHeader
+		
+		\newline \vspace{1cm}
+		\MembersOnCover
+
+	\end{tabbing}
+
+	\begin{abstract}
+		\input{0_resumen.tex}
+	\end{abstract}	
+
+
+
+\ifKeywords
+	\begin{center}
+		\emph{Palabras Clave: \myKeywords}
+	\end{center}
+\fi
+
+
+
+\ifPagebreak
+	\pagebreak
+\fi
+	\ifIndex
+		\tableofcontents
+%		\listoffigures
+%		\listoftables
+	\fi
+
+\ifPagebreak
+	\pagebreak
+\fi
+
+
+

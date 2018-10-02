@@ -1,0 +1,27 @@
+
+
+% \PrintMember recibe como argumentos 
+%		1) Apellido, Nombre
+%		2) Número de Padrón
+%		3) E-Mail
+%% Se invoca como \PutMember{#1}{#2}{#3}
+\providecommand{\PutMember}[3]
+{	{#1}	\>\>- \#{#2}\\
+		\>{\footnotesize{$<${#3}$>$}}\\
+}
+
+\providecommand{\MembersHeader}
+{ INTEGRANTES:\hspace{-1cm}\=\+\hspace{1cm}\=\hspace{6cm}\=\\}
+
+\providecommand{\MembersHeaderWithGroup}[1]
+{ INTEGRANTES:\hspace{-1cm}\=\+\hspace{1cm}\=\hspace{3cm} \hspace{2cm}\=\\}
+
+% Controla el \pagebreak de la carátula: Configurable con \Pagebreaktrue y \Pagebreakfalse
+\newif\ifPagebreak
+\newif\ifIndex
+\newif\ifSiunitx	% Defino la condición "ifsiunitx"
+\newif\ifListings	% Defino la condición "ifListings"
+\newif\ifKeywords	% Si en el abstract ponemos palabras clave
+\newif\ifPutgroup	% Si en el header aparece el grupo
+\newif\ifTodonotes
+\newif\ifVideo	

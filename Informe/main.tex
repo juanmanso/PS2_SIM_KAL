@@ -1,0 +1,52 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}		% Configuro la codificación
+\input{config.tex}				% Archivo con los comandos globales como Título y autores
+\input{preamble.tex}
+\input{aux_functions.tex}		% Se proveen un conjunto de funciones extras
+
+% Defino el path de los includegraphics
+\graphicspath{{./Figuras/}}		% Directorio que contiene los graficos
+
+% Defino el path para los input de .tex y de .eps
+\makeatletter
+\def\input@path{{./Figuras/}{./Secciones/}{./Cover_page/}}
+\makeatother
+
+% Defino el path del listings
+\ifListings
+%% Cambiar el nombre de la carpeta si se utilizan Listings
+	\lstinputpath{{../Octave/}}
+\fi
+
+\definecolor{myred}{rgb}{0.5,0,0}
+\definecolor{mygreen}{rgb}{0,0.5,0}
+
+
+
+\begin{document}
+		% Carátula (formal o simple,_formal o _simple respectivamente) con Resumen
+		% incluido e Índice (si es necesario configurar en config.tex) del informe
+		\input{cover_simple.tex}
+	\setcounter{page}{1}
+
+	\section{Enunciado}\label{sec:enunciado}
+		\input{0_enunciado.tex}
+
+	\section{Ejercicio 1}\label{sec:ej1}
+		\input{1_ej1.tex}
+		
+	\section{Ejercicio 2}\label{sec:ej2}
+		\input{2_ej2.tex}
+
+	\section{Ejercicio 3}\label{sec:ej3}
+		\input{3_ej3.tex}
+
+	\section{Ejercicio 4}\label{sec:ej4}
+		\input{4_ej4.tex}
+
+	\section{Conclusiones}\label{sec:conclusiones}
+		\input{5_conclusiones.tex}
+
+	% \appendix
+\end{document}

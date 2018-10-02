@@ -1,0 +1,53 @@
+\begin{titlepage}
+	
+		\thispagestyle{empty}
+
+		\begin{center}
+			\includegraphics[scale=0.3]{fiuba}\\
+			\large{\textsc{Universidad de Buenos Aires}}\\
+			\large{\textsc{Facultad De Ingeniería}}\\
+			\small{\myTimePeriod}
+		\end{center}
+
+		\vfill
+
+		\begin{center}
+			\Large{\underline{\textsc{\mySubject}}}
+		\end{center}
+
+		\vfill
+
+		\begin{tabbing}
+			\hspace{2cm}\=\+\myTitle\\
+				TEMA: \mySubtitle\\
+				FECHA: \today\\
+			\\
+				\MembersHeader
+				\MembersOnCover	
+		\end{tabbing}
+
+		\begin{abstract}
+			\input{0_resumen.tex}
+		\end{abstract}
+
+	\ifKeywords
+		\begin{center}
+			\emph{Palabras Clave: \myKeywords}
+		\end{center}
+	\fi	
+
+		\vfill
+	
+\end{titlepage}
+
+\ifPagebreak
+	\thispagestyle{empty}
+	\ifIndex
+		\tableofcontents
+%		\listoffigures
+%		\listoftables
+	\fi
+
+	\pagebreak
+\fi
+

@@ -1,0 +1,105 @@
+%Preambulo para articulo científico de LaTeX
+
+\usepackage[a4paper,left=3cm,right=3cm,bottom=3.5cm,top=3.5cm]{geometry} 	% Configuro la geometría del papel
+%\usepackage{microtype}								% Mejora el "spacing" de las palabras
+\usepackage[spanish]{babel} 							% Compatibilizo los signos del español
+	\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}		%% Redefino nombres preestablecidos por Babel
+	\addto\captionsspanish{\renewcommand{\listtablename}{Índice de tablas}}	%% y así en vez de Cuadro dirá Tabla.
+\usepackage{amsmath, amsfonts, amssymb}						% Entornos matemáticos, fuentes y símbolos
+\usepackage{graphicx}								% Necesario para insertar figuras
+\usepackage{fancyhdr}								% Para manipular headers y footers
+\usepackage[usenames,dvipsnames]{color}						% \color{color deseado} {lo que querés que tenga color}
+\usepackage{subcaption}								% Permite captions del tipo 1a, 1b
+\usepackage{multirow}								% Para tablas
+\usepackage{float}
+
+% Para video
+\ifVideo
+	\usepackage{media9}
+	\addmediapath{./../reportes/}
+\fi
+
+%\usepackage{times}
+%\usepackage{mathtools}
+%\usepackage{upgreek} % letras griegas sin cursiva
+%\usepackage{cancel}
+\usepackage{rotating}
+\usepackage{tikz}
+\usepackage{pgfplots}
+%	\pgfplotsset{compat=1.12}
+	\usetikzlibrary{plotmarks}% matlab2tikz
+\usepackage{grffile}% matlab2tikz 
+	\usetikzlibrary{calc,patterns,decorations.pathmorphing,decorations.markings}
+
+\ifListings
+	\usepackage{listings}
+
+	\providecommand{\lstinputpath}[1]{\lstset{inputpath=#1}}
+
+%	\input{.lst_default.tex}
+	\input{.lst_matlab.tex}
+%	\input{.lst_c.tex}
+%	\input{.lst_c++.tex}
+	
+% 	\input{.lst_pseudocode.tex}
+
+
+\fi
+
+\ifSiunitx
+\usepackage{siunitx}											% Unidades: \SI {cantidad} {\unidad} (necesita texlive-science)
+	\sisetup{load-configurations = abbreviations}							% Habilita poner \cm en vez de \centi\metre
+	\sisetup{output-decimal-marker = {,}}									% Cambia los puntos decimales por comas
+	\sisetup{per-mode = fraction}											% Pone las unidades como fracción
+	\sisetup{quotient-mode = fraction}										
+\fi
+
+
+\ifTodonotes
+\usepackage{xargs}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+
+	\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+	\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+	\newcommandx{\info}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,#1]{#2}} % OliveGreen
+	\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+	\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+\fi
+
+
+\usepackage{booktabs}														% Permite hacer tablas sin separadores en el medio
+\usepackage{placeins}														
+		\let\Oldsection\section												%% Permite que los flotantes (como figuras) no aparescan
+	\renewcommand{\section}{\FloatBarrier\Oldsection}						%% antes o después de su sección correspondiente.
+		\let\Oldsubsection\subsection
+	\renewcommand{\subsection}{\FloatBarrier\Oldsubsection}		
+		\let\Oldsubsubsection\subsubsection
+	\renewcommand{\subsubsection}{\FloatBarrier\Oldsubsubsection}
+\usepackage{hyperref}														% Debe ser agregado al final del preambulo
+
+\hypersetup
+{    bookmarks=true,         % show bookmarks bar?
+     unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+     pdftoolbar=true,        % show Acrobat’s toolbar?
+     pdfmenubar=true,        % show Acrobat’s menu?
+     pdffitwindow=false,     % window fit to page when opened
+     pdftitle={\myTitle},    		 % title
+     pdfauthor={\myAuthorSurname},   % author
+	 pdfcreator={\myAuthorSurname},	 % creator = author
+     pdfsubject={\mySubject},		 % subject of the document
+     pdfkeywords={\myKeywords},
+     colorlinks=true,        % false: boxed links; true: colored links
+     linkcolor=black,        % color of internal links (change box color with linkbordercolor)
+     citecolor=black,        % color of links to bibliography
+     filecolor=magenta,      % color of file links
+     urlcolor=cyan           % color of external links
+}
+
+%Configuro la pagina con los encabezaos y pies de paginas
+\pagestyle{fancy}										% Para agregar encabezados y pie de paginas	
+\lhead{\mySubject}										% Encabezado izquierdo
+\rhead{\includegraphics[scale=0.15]{\myHeaderLogo}} 	% Encabezado derecho (logo de la FIUBA)	
+\ifPutgroup
+\chead{\texttt{Grupo Nº\myGroupNumber} \\ \textit{\footnotesize{\myTimePeriod}}}
+\fi				

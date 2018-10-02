@@ -1,0 +1,64 @@
+
+	\begin{lstlisting}[caption=Script para la resolución del ejercicio 2]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EJERCICIO 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+bool_p = 1;	% Inciso a
+bool_v = 0;	% Inciso b
+bool_a = 0;	% Inciso c
+
+
+x0 = [40 -200 0 0 0 0]';
+P0_0 = diag([100^2 100^2, 1 1, 0.1 0.1]);
+
+%%%%% y_k = [I 0 0] [pk vk ak]' + ruido \eta
+sigma_etap = 60;
+sigma_etav = 2;
+sigma_etaa = 0.1;
+
+
+C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
+
+yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + randn(dim,cant_mediciones)*sigma_etap;
+yk = yk'; % Así tiene la forma de Pos
+
+R = eye(dim)*sigma_etap^2;
+Bk1 = eye(cant_estados);
+
+
+%%% ALGORITMO %%%%
+xk1_k1 = x0;
+Pk1_k1 = P0_0;
+x = x0;
+P = P0_0;
+g = yk(1,:)';
+
+for i=1:cant_mediciones-1
+	% Predicción
+	xk_k1 = Ad * xk1_k1;
+	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1.';
+	gk = [innovaciones(yk(i,:),C,xk_k1)];
+
+	% Corrección
+	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
+	xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
+	Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
+	
+% PARA HACER SIMETRICA P, ALEJANDOSE DEL VALOR VERDADERO	
+%		% Para hacerlo simétrico
+%		for i=1:2
+%			Pk_k=(Pk_k+Pk_k')/2;
+%		end
+
+	% Actualización
+	xk1_k1 = xk_k;
+	Pk1_k1 = Pk_k;
+
+
+	% Guardo
+	g = [g gk];
+	x = [x xk_k];
+	P = [P; Pk_k];
+end
+
+	\end{lstlisting}

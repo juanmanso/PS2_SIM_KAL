@@ -1,0 +1,42 @@
+\input{.command.tex}
+% En el siguiente archivo se configuran las variables del trabajo práctico
+%% \providecommand es similar a \newcommnad, salvo que el primero ante un 
+%% conflicto en la compilación, es ignorado.
+
+% Al comienzo de un TP se debe modificar los argumentos de los comandos
+
+\providecommand{\myTitle}{EJERCICIO PRÁCTICO}
+\providecommand{\mySubtitle}{Simulación de Filtro de Kalman}
+
+\providecommand{\mySubject}{Procesamiento de Señales II (86.51)}
+\providecommand{\myKeywords}{UBA, Ingeniería, PS2}
+
+\providecommand{\myAuthorSurname}{Manso}
+\providecommand{\myTimePeriod}{Año 2018 - 2\textsuperscript{do} Cuatrimestre}
+
+% No es necesario modificar este %%%%%%%%%%%%%%
+\providecommand{\myHeaderLogo}{header_fiuba}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Si se utilizan listings, definir el lenguaje aquí
+\providecommand{\myLanguage}{matlab}
+
+% Crear los integrantes del TP con el comando \PutMember donde
+%%		1) Apellido, Nombre
+%%		2) Número de Padrón
+%%		3) E-Mail
+\providecommand{\MembersOnCover}[0]
+{		
+		\PutMember{Manso, Juan} {96133} {juanmanso@gmail.com}
+}
+
+\providecommand{\myGroupNumber}{11}
+
+\Pagebreakfalse		% Setea si hay un salto de página en la carátula
+\Indexfalse
+\Siunitxtrue			% Si quiero utilizar el paquete, \siunixtrue. Si no \siunixfalse
+\Todonotestrue		% Habilita/Deshabilita las To-Do Notes y las funciones \unsure, \change, \info, \improvement y \thiswillnotshow.
+\Listingstrue
+\Keywordsfalse
+\Putgroupfalse		% Habilita/Deshabilita el \myGroup en los headers
+\Videofalse

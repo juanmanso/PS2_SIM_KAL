@@ -1,0 +1,65 @@
+\subsection{Inciso a}
+
+	\graficarEPS{0.6}{bloques}{Diagrama en bloques del modelo.}{fig:bloques}
+	Se define la variable de estado asociada a las ecuaciones de movimiento continuo como:
+		\begin{equation*}
+			\vect{x}(t) = \begin{bmatrix} \vect{p}(t) \\[0.3em] \vect{v}(t) \\[0.3em] \vect{a}(t) \end{bmatrix} \qquad%
+			\dot{\vect{x}}(t) = \begin{bmatrix} \dot{\vect{p}}(t) \\[0.3em] \dot{\vect{v}}(t) \\[0.3em] \dot{\vect{a}}(t) \end{bmatrix}
+		\end{equation*}
+
+	Así el modelo resulta:
+		\begin{equation*}
+			\Sigma:
+			\begin{cases}
+				\dvect{x}(t) = A\: \vect{x}(t) + B \: \vect{\xi}(t) \\
+				\vect{y}(t) = C\: \vect{x}(t) + \vect{\eta}(t)
+			\end{cases}
+		\end{equation*}
+	donde $\vect{\xi}(t)$ es el ruido de proceso y $\vect{\eta}(t)$.
+	\unsure{Preguntar cuánto tengo que definir y etc.}
+
+
+\subsection{Inciso b}
+
+	\begin{lstlisting}
+config_m;
+
+datos_str = load('datos.mat');
+
+Acel = datos_str.Acel;
+Tiempo = datos_str.tiempo;
+Pos = datos_str.Pos;
+Vel = datos_str.Vel;
+
+dim = 2;			% Se considera sólo x e y
+tipos_variables = 3;		% Posición, Velocidad, Aceleración
+cant_mediciones = length(Pos);
+cant_estados = tipos_variables * dim;
+
+
+
+% Datos
+var_xip = 3e-4;
+var_xiv = 2e-3;
+var_xia = 1e-2;
+
+%%%
+T = Tiempo(2:end)-Tiempo(1:end-1);	
+T = 1;					% Suponiendo equiespaciado
+
+% Variable de estado X = [P;V;A]
+I = eye(dim);
+Ad =[I		I.*T	(T.^2)/2.*I;
+     I*0	I	T.*I;
+     I*0	I*0	I;];
+
+% Covarianza del ruido de proceso
+Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]);
+	\end{lstlisting}
+
+
+
+
+
+	
+		

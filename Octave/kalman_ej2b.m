@@ -21,6 +21,10 @@ Vel = datos_str.Vel;
 
 dim = 2;
 
+bool_p = 0;
+bool_v = 1;
+bool_a = 0;
+
 %%%%%%%%%%%%%%
 %%% 1a Defina las variables de estado
 %%%%%%%%%%%%%%%
@@ -44,7 +48,7 @@ Ad =	[I	I.*T	(T.^2)/2.*I;
 	 I*0	I	T.*I;
 	 I*0	I*0	I;];
 
-Qd = diag([var_xip,var_xip,var_xiv,var_xiv,var_xia,var_xia]); %Sólo para x e y
+Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %Sólo para x e y
 
 
 
@@ -64,7 +68,7 @@ cant_mediciones = length(Pos);
 
 %%% Para hacer AWGN, randn(fila,col)*sigma_etap
 
-C = [eye(dim) zeros(dim) zeros(dim)];
+C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
 
 yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + randn(dim,cant_mediciones)*sigma_etap;
 yk = yk'; % Así tiene la forma de Pos
@@ -78,29 +82,87 @@ Pk1_k1 = P0_0;
 Bk1 = eye(dim*3);
 i=1;
 x = x0;
+P = P0_0;
+g = yk(1,:)';
 
 for i=1:cant_mediciones-1
 	% Predicción
 	xk_k1 = Ad * xk1_k1;
 	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
+	gk = [innovaciones(yk(i,:),C,xk_k1)];
 
 	% Corrección
 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
 	xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
 	Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
+	
+% PARA HACER SIMETRICA P, ALEJANDOSE DEL VALOR VERDADERO	
+%		% Para hacerlo simétrico
+%		for i=1:2
+%			Pk_k=(Pk_k+Pk_k')/2;
+%		end
 
 	% Actualización
 	xk1_k1 = xk_k;
 	Pk1_k1 = Pk_k;
 
+
 	% Guardo
+	g = [g gk];
 	x = [x xk_k];
+	P = [P; Pk_k];
 end
 
 
 % Grafico de medida, estimada, ruidosa
 figure
 hold on
+grid
 plot(x(1,:),x(2,:),'LineWidth',3)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
+title('Estimación');
+legend(['Estimada';'Medida';'Ruidosa']);
+xlabel = 'Tiempo [s]';
+ylabel = 'Posición [m]';
+
+% Grafico del estado posición en función del tiempo
+figure
+hold on
+grid
+plot(x(1,:),'LineWidth',2)
+plot(x(2,:),'color',myGreen,'LineWidth',2)
+title('Estados de posición');
+
+
+% Grafico del estado velocidad en función del tiempo
+figure
+hold on
+grid
+plot(x(3,:),'LineWidth',2)
+plot(x(4,:),'color',myGreen,'LineWidth',2)
+title('Estados de velocidad');
+
+
+% Grafico del estado aceleración en función del tiempo
+figure
+hold on
+grid
+plot(x(5,:),'LineWidth',2)
+plot(x(6,:),'color',myGreen,'LineWidth',2)
+title('Estados de aceleración');
+
+
+% Gráfico de Ruido Blanco
+figure
+plot(g(1,:),g(2,:));
+mean(g') 
+sqrt(var(g')) 
+
+% Observabilidad
+cant_estados = 3*dim;
+Obs = obsv(Ad,C);
+rango_obs = rank(Obs);
+estados_no_observables = cant_estados - rango_obs
+
+
