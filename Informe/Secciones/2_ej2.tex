@@ -1,5 +1,5 @@
 
-	\begin{lstlisting}[caption=Script para la resolución del ejercicio 2]
+	\begin{lstlisting}[caption=\emph{Script} para la resolución del ejercicio 2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EJERCICIO 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -16,21 +16,26 @@ sigma_etap = 60;
 sigma_etav = 2;
 sigma_etaa = 0.1;
 
-
-C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
-
-yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + randn(dim,cant_mediciones)*sigma_etap;
-yk = yk'; % Así tiene la forma de Pos
-
-R = eye(dim)*sigma_etap^2;
 Bk1 = eye(cant_estados);
+C =	[eye(dim*bool_p) zeros(dim*bool_p) zeros(dim*bool_p);
+	 zeros(dim*bool_v) eye(dim*bool_v) zeros(dim*bool_v);
+	 zeros(dim*bool_a) zeros(dim*bool_a) eye(dim*bool_a)];
+
+M_eta = [randn(dim,cant_mediciones)*sigma_etap*bool_p; 
+	randn(dim,cant_mediciones)*sigma_etav*bool_v;
+       	randn(dim,cant_mediciones)*sigma_etaa*bool_a];
+
+R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
+
+yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + (C*M_eta);
+yk = yk'; % Así tiene la forma de Pos
 
 
 %%% ALGORITMO %%%%
-xk1_k1 = x0;
-Pk1_k1 = P0_0;
 x = x0;
 P = P0_0;
+xk1_k1 = x;
+Pk1_k1 = P;
 g = yk(1,:)';
 
 for i=1:cant_mediciones-1
@@ -41,15 +46,9 @@ for i=1:cant_mediciones-1
 
 	% Corrección
 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
-	xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
-	Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
+	xk_k = xk_k1 + Kk*(gk);
+	Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
 	
-% PARA HACER SIMETRICA P, ALEJANDOSE DEL VALOR VERDADERO	
-%		% Para hacerlo simétrico
-%		for i=1:2
-%			Pk_k=(Pk_k+Pk_k')/2;
-%		end
-
 	% Actualización
 	xk1_k1 = xk_k;
 	Pk1_k1 = Pk_k;
@@ -60,5 +59,15 @@ for i=1:cant_mediciones-1
 	x = [x xk_k];
 	P = [P; Pk_k];
 end
-
 	\end{lstlisting}
+
+	\graficarEPS{1.0}{graf_ej2a}{Trayectoria del vehículo estimando a partir de $p$.}{fig:ej2a}
+	\graficarEPS{1.0}{graf_ej2b}{Trayectoria del vehículo estimando a partir de $v$.}{fig:ej2b}
+	\graficarEPS{1.0}{graf_ej2c}{Trayectoria del vehículo estimando a partir de $a$.}{fig:ej2c}
+
+%*% C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];	% Obsoleto
+%*%C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
+%*%
+%*%yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + randn(dim,cant_mediciones)*sigma_etap;
+
+%*R = eye(dim)*sigma_etap^2;

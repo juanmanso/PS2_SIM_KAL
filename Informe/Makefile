@@ -66,7 +66,8 @@ cls: clean
 
 .PHONY: graphics
 graphics:
-	make -C $(GRAPHICS_DIR) print
+	make -C $(GRAPHICS_DIR) move
+	make all
 # Si pusiese all en vez de print, quedo dentro del Octave y puedo trabajar allí
 
 

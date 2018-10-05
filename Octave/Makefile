@@ -18,6 +18,7 @@ all:
 debug: 
 	$(PROGRAM) $(DEBUG) $(SCRIPT_NAME)
 
+
 print:
 	$(PROGRAM) -q $(SCRIPT_NAME) -p 1
 #	mv $(OUTPUT_DIR)*.eps $(FIG_DIR)
@@ -38,9 +39,12 @@ move:
 	mv $(OUTPUT_DIR)*.eps $(FIG_DIR)
 	mv $(OUTPUT_DIR)*.tex $(FIG_DIR)
 
-
+.PHONY: clean
 clean:
 	-rm -f octave-workspace
 	-rm -f *~
 	make -C $(SPICE_DIR) clean
 	make -C $(LAB_DIR) clean
+
+ppython:
+	py graficar.py

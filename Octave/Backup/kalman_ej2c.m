@@ -22,8 +22,8 @@ Vel = datos_str.Vel;
 dim = 2;
 
 bool_p = 0;
-bool_v = 1;
-bool_a = 0;
+bool_v = 0;
+bool_a = 1;
 
 %%%%%%%%%%%%%%
 %%% 1a Defina las variables de estado
@@ -53,13 +53,10 @@ Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %Sól
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EJERCICIO 2
+% EJ 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 x0 = [40 -200 0 0 0 0]';
-pb = [0 0]';
-vb = [0.2 0.3]';
-ab = [0 0]';
 P0_0 = diag([100^2 100^2, 1 1, 0.1 0.1]);
 
 %% a)
@@ -72,9 +69,8 @@ cant_mediciones = length(Pos);
 %%% Para hacer AWGN, randn(fila,col)*sigma_etap
 
 C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
-b = [ones(cant_mediciones,dim).*pb' ones(cant_mediciones,dim).*vb' ones(cant_mediciones,dim).*ab'];
 
-yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + randn(dim,cant_mediciones)*sigma_etav;
+yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + randn(dim,cant_mediciones)*sigma_etaa;
 yk = yk'; % Así tiene la forma de Pos
 
 R = eye(dim)*sigma_etap^2;
@@ -117,58 +113,26 @@ for i=1:cant_mediciones-1
 	P = [P; Pk_k];
 end
 
-%% Con corrección de sesgo
-xk1_k1 = x0;
-Pk1_k1 = P0_0;
-Bk1 = eye(dim*3);
-xb = x0;
-Pb = P0_0;
-gb = yk(1,:)';
-
-yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]-b)' + randn(dim,cant_mediciones)*sigma_etav;
-yk = yk';
-
-for i=1:cant_mediciones-1
-	% Predicción
-	xk_k1 = Ad * xk1_k1;
-	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
-	gk = [innovaciones(yk(i,:),C,xk_k1)];
-
-	% Corrección
-	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
-	xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
-	Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
-	
-% PARA HACER SIMETRICA P, ALEJANDOSE DEL VALOR VERDADERO	
-%		% Para hacerlo simétrico
-%		for i=1:2
-%			Pk_k=(Pk_k+Pk_k')/2;
-%		end
-
-	% Actualización
-	xk1_k1 = xk_k;
-	Pk1_k1 = Pk_k;
-
-
-	% Guardo
-	gb = [gb gk];
-	xb = [xb xk_k];
-	Pb = [Pb; Pk_k];
-end
-
 
 % Grafico de medida, estimada, ruidosa
 figure
 hold on
 grid
 plot(x(1,:),x(2,:),'LineWidth',3)
-plot(xb(1,:),xb(2,:),'LineWidth',3, 'color', myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
-plot(yk(:,1),yk(:,2),'color','k')
+plot(yk(:,1),yk(:,2),'color',myGreen)
 title('Estimación');
-legend(['Estimada sin corregir'; 'Estimada corregida';'Medida';'Ruidosa']);
+legend(['Estimada';'Medida';'Ruidosa']);
 xlabel = 'Tiempo [s]';
 ylabel = 'Posición [m]';
+
+% Grafico del estado posición en función del tiempo
+figure
+hold on
+grid
+plot(x(1,:),'LineWidth',2)
+plot(x(2,:),'color',myGreen,'LineWidth',2)
+title('Estados de posición');
 
 
 % Grafico del estado velocidad en función del tiempo
@@ -176,16 +140,38 @@ figure
 hold on
 grid
 plot(x(3,:),'LineWidth',2)
-plot(xb(3,:),'LineWidth',3, 'color', myGreen)
-legend('Sin corrección','Corregida')
-title('Estados de velocidad en x');
+plot(x(4,:),'color',myGreen,'LineWidth',2)
+title('Estados de velocidad');
 
+
+% Grafico del estado aceleración en función del tiempo
 figure
 hold on
 grid
-plot(x(4,:),'LineWidth',3, 'color', 'b')
-plot(xb(4,:),'color',myGreen,'LineWidth',2)
-legend('Sin corrección','Corregida')
-title('Estados de velocidad en y');
+plot(x(5,:),'LineWidth',2)
+plot(x(6,:),'color',myGreen,'LineWidth',2)
+title('Estados de aceleración');
+
+
+% Gráfico de correlación de innovaciones (debe ser ruido blanco)
+covx_g = xcorr(g(1,:)');
+covy_g = xcorr(g(2,:)');
+
+figure
+plot(covx_g)
+grid
+title('Covarianza innovaciones x')
+
+figure
+plot(covy_g)
+grid
+title('Covarianza innovaciones y')
+
+
+% Observabilidad
+cant_estados = dim*3;
+Obs = obsv(Ad,C);
+rango_obs = rank(Obs);
+estados_no_observables = cant_estados - rango_obs
 
 

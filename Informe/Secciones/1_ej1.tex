@@ -15,8 +15,12 @@
 				\vect{y}(t) = C\: \vect{x}(t) + \vect{\eta}(t)
 			\end{cases}
 		\end{equation*}
-	donde $\vect{\xi}(t)$ es el ruido de proceso y $\vect{\eta}(t)$.
+	donde $\vect{\xi}(t)$ es el ruido de proceso y $\vect{\eta}(t)$ el ruido de medición. La matriz $A$ contiene la información de la dinámica del sistema. A partir de las ecuaciones del sistema representado en \eqref{eq:dinamica_enun} se obtiene la matriz de estados como:
 	\unsure{Preguntar cuánto tengo que definir y etc.}
+
+		\begin{equation*}
+			A(t) = \begin{bmatrix} I & IT & I\frac{T^2}{2} \\[0.3em] 0 & I & IT \\[0.3em] 0 & 0 & I \end{bmatrix}
+		\end{equation*}
 
 
 \subsection{Inciso b}
@@ -56,6 +60,8 @@ Ad =[I		I.*T	(T.^2)/2.*I;
 % Covarianza del ruido de proceso
 Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]);
 	\end{lstlisting}
+% $Q_d=\begin{bmatrix} \sigma^2_{\xi_{px}} &&&&&\\[0.3em] &\sigma^2_{\xi_{py}}&&&&\\[0.3em] &&\sigma^2_{\xi_{vx}}&&&\\[0.3em] &&&\sigma^2_{\xi_{vy}}&&\\[0.3em] &&&&\sigma^2_{\xi_{ax}}&\\[0.3em] &&&&&\sigma^2_{\xi_{ay}}\end{bmatrix}$
+
 
 
 

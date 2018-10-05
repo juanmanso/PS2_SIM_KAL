@@ -1,0 +1,58 @@
+
+	\begin{lstlisting}[caption = Parte del \emph{Script} utilizado para el ejercicio 3]
+% Nuevos datos
+x01 = [40 -200 0 0 0 0]';
+x02 = [200 -3000 0 0 0 0]';
+x03 = x01;
+x04 = x02;
+x0_vec = [x01 x02 x03 x04];
+
+diag1_p = [100^4 100^4, 10^2 10^2, 10 10];
+diag2_p = [0.1 0.1, 1e-5 1e-5, 1e-7 1e-7];
+diag_vec = [diag1_p; diag1_p; diag2_p; diag2_p];
+
+
+for l = 1:4
+	xa = x0_vec(:,l);
+	Pa = diag(diag_vec(l,:));
+	xk1_k1 = xa;
+	Pk1_k1 = Pa;
+
+	for i = 1:cant_mediciones-1
+		% Predicción
+		xk_k1 = Ad * xk1_k1;
+		Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1.';
+	
+		% Corrección
+		Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
+		xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
+		Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
+		
+		% Actualización
+		xk1_k1 = xk_k;
+		Pk1_k1 = Pk_k;
+	
+	
+		% Guardo
+		xa = [xa xk_k];
+		Pa = [Pa; Pk_k];
+	end
+
+	if(l==1)
+		x1=xa; P1=Pa;
+	elseif(l==2)
+		x2=xa; P2=Pa;
+	elseif(l==3)
+		x3=xa; P3=Pa;
+	else
+		x4=xa; P4=Pa;
+	end
+	
+end
+	\end{lstlisting}
+
+	\graficarEPS{1}{graf_ej3_superpuesto}{Superposición de las trayectorias estimadas con distintos valores iniciales.}{fig:ej3_sup}
+	\graficarEPS{1}{graf_ej3a}{Estimación de la trayectoria a partir de $x_1$ y $P_1$.}{fig:ej3a}
+	\graficarEPS{1}{graf_ej3b}{Estimación de la trayectoria a partir de $x_2$ y $P_2$.}{fig:ej3b}
+	\graficarEPS{1}{graf_ej3c}{Estimación de la trayectoria a partir de $x_3$ y $P_3$.}{fig:ej3c}
+	\graficarEPS{1}{graf_ej3d}{Estimación de la trayectoria a partir de $x_4$ y $P_4$.}{fig:ej3d}

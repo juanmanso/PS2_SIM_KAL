@@ -21,9 +21,6 @@ Vel = datos_str.Vel;
 
 dim = 2;
 
-bool_p = 1;
-bool_v = 0;
-bool_a = 0;
 
 %%%%%%%%%%%%%%
 %%% 1a Defina las variables de estado
@@ -67,10 +64,15 @@ sigma_etaa = 0.1;
 cant_mediciones = length(Pos);
 
 %%% Para hacer AWGN, randn(fila,col)*sigma_etap
+bool_p = 0;
+bool_v = 1;
+bool_a = 0;
 
 C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
 
-yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + randn(dim,cant_mediciones)*sigma_etap;
+M_eta = [sigma_etap*bool_p sigma_etav*bool_v sigma_etaa*bool_a];
+
+yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + randn(dim,cant_mediciones)*sigma_etav;
 yk = yk'; % Así tiene la forma de Pos
 
 R = eye(dim)*sigma_etap^2;
@@ -152,12 +154,20 @@ plot(x(5,:),'LineWidth',2)
 plot(x(6,:),'color',myGreen,'LineWidth',2)
 title('Estados de aceleración');
 
+% Gráfico de correlación de innovaciones (debe ser ruido blanco)
+covx_g = xcorr(g(1,:)');
+covy_g = xcorr(g(2,:)');
 
-% Gráfico de Ruido Blanco
 figure
-plot(g(1,:),g(2,:));
-mean(g') 
-sqrt(var(g')) 
+plot(covx_g)
+grid
+title('Covarianza innovaciones x')
+
+figure
+plot(covy_g)
+grid
+title('Covarianza innovaciones y')
+
 
 % Observabilidad
 cant_estados = 3*dim;
