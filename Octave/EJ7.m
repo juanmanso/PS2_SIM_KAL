@@ -10,8 +10,8 @@ Tiempo = datos_str.tiempo;
 Pos = datos_str.Pos;
 Vel = datos_str.Vel;
 
-dim = 2;			% Se considera s√≥lo x e y
-tipos_variables = 3;		% Posici√≥n, Velocidad, Aceleraci√≥n
+dim = 2;			% Se considera sÛlo x e y
+tipos_variables = 3;		% PosiciÛn, Velocidad, AceleraciÛn
 cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
@@ -21,7 +21,7 @@ cant_estados = tipos_variables * dim;
 %p_perdido_v = rand(1,dim)/2 + 0.5; 
 %p_perdido_a = rand(1,dim)/2 + 0.5;  
 
-% Variables de configuraci√≥n de la p√©rdida de datos
+% Variables de configuraciÛn de la pÈrdida de datos
 val_max_perdido = 0.3;				% Se pierden 3 de 10 datos
 p_perdido_p = [0.1 0.1];
 p_perdido_v = [0.3 0.3]; 
@@ -57,7 +57,7 @@ Ad =	[I	I.*T	(T.^2)/2.*I;
 	 I*0	I	T.*I;
 	 I*0	I*0	I;];
 
-Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %S√≥lo para x e y
+Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %SÛlo para x e y
 
 
 
@@ -95,8 +95,8 @@ Mediciones = [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)];
 %Mediciones = Mediciones .* binornd(1,1-p_bernoulli,[cant_estados,cant_mediciones])';
 
 yk = C * Mediciones' + (C*M_eta);
-yk = yk'; % As√≠ tiene la forma de Pos
-%yk = yk' .* binornd(1,p_bernoulli,[rowC,cant_mediciones])'; % As√≠ tiene la forma de Pos
+yk = yk'; % AsÌ tiene la forma de Pos
+%yk = yk' .* binornd(1,p_bernoulli,[rowC,cant_mediciones])'; % AsÌ tiene la forma de Pos
 
 R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
 
@@ -116,17 +116,17 @@ for i=1:cant_mediciones-1
 	C = C .* perder_dato;	% Funciona en Matlab 2017b y Octave. Se necesita 'broadcasting operation'
 	
 
-	% Predicci√≥n
+	% PredicciÛn
 	xk_k1 = Ad * xk1_k1;
 	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
 	gk = [innovaciones(yk(i,:),C,xk_k1)];
 
-	% Correcci√≥n
+	% CorrecciÛn
 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
 	xk_k = xk_k1 + Kk*(gk);
 	Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
 	
-	% Actualizaci√≥n
+	% ActualizaciÛn
 	xk1_k1 = xk_k;
 	Pk1_k1 = Pk_k;
 	C = C_aux;
@@ -146,21 +146,25 @@ grid
 plot(x(1,:),x(2,:),'LineWidth',3)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
-title('Estimaci√≥n');
-legend(['Estimada';'Medida';'Ruidosa']);
+title('EstimaciÛn');
+if(EsMatlab == 1)
+    legend('Estimada','Medida','Ruidosa');
+else
+    legend(['Estimada';'Medida';'Ruidosa']);
+end
 xlabel = 'Tiempo [s]';
-ylabel = 'Posici√≥n [m]';
+ylabel = 'PosiciÛn [m]';
 
-% Grafico del estado posici√≥n en funci√≥n del tiempo
+% Grafico del estado posiciÛn en funciÛn del tiempo
 figure
 hold on
 grid
 plot(x(1,:),'LineWidth',2)
 plot(x(2,:),'color',myGreen,'LineWidth',2)
-title('Estados de posici√≥n');
+title('Estados de posiciÛn');
 
 
-% Grafico del estado velocidad en funci√≥n del tiempo
+% Grafico del estado velocidad en funciÛn del tiempo
 figure
 hold on
 grid
@@ -169,7 +173,7 @@ plot(x(4,:),'color',myGreen,'LineWidth',2)
 title('Estados de velocidad');
 
 
-% Grafico del estado aceleraci√≥n en funci√≥n del tiempo
+% Grafico del estado aceleraciÛn en funciÛn del tiempo
 figure
 hold on
 grid
@@ -178,7 +182,7 @@ plot(x(6,:),'color',myGreen,'LineWidth',2)
 title('Estados de aceleraci√≥n');
 
 
-% Gr√°fico de correlaci√≥n de innovaciones (debe ser ruido blanco)
+% Gr·fico de correlaciÛn de innovaciones (debe ser ruido blanco)
 covx_g = xcorr(g(1,:)');
 covy_g = xcorr(g(2,:)');
 
