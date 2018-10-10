@@ -1,6 +1,6 @@
 config_m;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EJ KALMAN - Estimaci√≥n a partir de mediciones
+% EJ KALMAN - EstimaciÛn a partir de mediciones
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 datos_str = load('datos.mat');
@@ -10,8 +10,8 @@ Tiempo = datos_str.tiempo;
 Pos = datos_str.Pos;
 Vel = datos_str.Vel;
 
-dim = 2;			% Se considera s√≥lo x e y
-tipos_variables = 3;		% Posici√≥n, Velocidad, Aceleraci√≥n
+dim = 2;			% Se considera sÛlo x e y
+tipos_variables = 3;		% PosiciÛn, Velocidad, AceleraciÛn
 cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
@@ -77,7 +77,7 @@ M_eta = [randn(dim,cant_mediciones)*sigma_etap*bool_p;
        	randn(dim,cant_mediciones)*sigma_etaa*bool_a];
 
 yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + (C*M_eta);
-yk = yk'; % As√≠ tiene la forma de Pos
+yk = yk'; % AsÌ tiene la forma de Pos
 
 R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
 
@@ -90,17 +90,17 @@ Pk1_k1 = P;
 g = yk(1,:)';
 
 for i=1:cant_mediciones-1
-	% Predicci√≥n
+	% PredicciÛn
 	xk_k1 = Ad * xk1_k1;
 	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
 	gk = [innovaciones(yk(i,:),C,xk_k1)];
 
-	% Correcci√≥n
+	% CorrecciÛn
 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
 	xk_k = xk_k1 + Kk*(gk);
 	Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
 	
-	% Actualizaci√≥n
+	% ActualizaciÛn
 	xk1_k1 = xk_k;
 	Pk1_k1 = Pk_k;
 
@@ -119,22 +119,26 @@ grid
 plot(x(1,:),x(2,:),'LineWidth',3)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
-title('Estimaci√≥n de la trayectoria - Medici√≥n de $p$');
-legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
-xlabel('Posici√≥n $x$ [\si{\m}]');
-ylabel('Posici√≥n $y$ [\si{\m}]');
+title('EstimaciÛn de la trayectoria - MediciÛn de $p$');
+if(EsMatlab == 1)
+    legend('Estimada','Medida','Ruidosa','location','SouthEast');
+else
+    legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+end
+xlabel('PosiciÛn $x$ [\si{\m}]');
+ylabel('PosiciÛn $y$ [\si{\m}]');
 return;
 
-% Grafico del estado posici√≥n en funci√≥n del tiempo
+% Grafico del estado posiciÛn en funciÛn del tiempo
 figure
 hold on
 grid
 plot(x(1,:),'LineWidth',2)
 plot(x(2,:),'color',myGreen,'LineWidth',2)
-title('Estados de posici√≥n');
+title('Estados de posiciÛn');
 
 
-% Grafico del estado velocidad en funci√≥n del tiempo
+% Grafico del estado velocidad en funciÛn del tiempo
 figure
 hold on
 grid
@@ -143,16 +147,16 @@ plot(x(4,:),'color',myGreen,'LineWidth',2)
 title('Estados de velocidad');
 
 
-% Grafico del estado aceleraci√≥n en funci√≥n del tiempo
+% Grafico del estado aceleraciÛn en funciÛn del tiempo
 figure
 hold on
 grid
 plot(x(5,:),'LineWidth',2)
 plot(x(6,:),'color',myGreen,'LineWidth',2)
-title('Estados de aceleraci√≥n');
+title('Estados de aceleraciÛn');
 
 
-% Gr√°fico de correlaci√≥n de innovaciones (debe ser ruido blanco)
+% Gr·fico de correlaciÛn de innovaciones (debe ser ruido blanco)
 covx_g = xcorr(g(1,:)');
 covy_g = xcorr(g(2,:)');
 
