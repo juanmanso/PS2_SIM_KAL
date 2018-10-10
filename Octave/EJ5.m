@@ -1,6 +1,6 @@
 config_m;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EJ KALMAN - Variaci√≥n de R
+% EJ KALMAN - VariaciÛn de R
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 datos_str = load('datos.mat');
@@ -10,12 +10,12 @@ Tiempo = datos_str.tiempo;
 Pos = datos_str.Pos;
 Vel = datos_str.Vel;
 
-dim = 2;			% Se considera s√≥lo x e y
-tipos_variables = 3;		% Posici√≥n, Velocidad, Aceleraci√≥n
+dim = 2;			% Se considera sÛlo x e y
+tipos_variables = 3;		% PosiciÛn, Velocidad, AceleraciÛn
 cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
-% Variables de configuraci√≥n
+% Variables de configuraciÛn
 factor_R = 1;
 bool_p = 1;
 bool_v = 0;
@@ -44,7 +44,7 @@ Ad =	[I	I.*T	(T.^2)/2.*I;
 	 I*0	I	T.*I;
 	 I*0	I*0	I;];
 
-Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %S√≥lo para x e y
+Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %SÛlo para x e y
 
 
 
@@ -78,7 +78,7 @@ M_eta = [randn(dim,cant_mediciones)*sigma_etap*bool_p;
        	randn(dim,cant_mediciones)*sigma_etaa*bool_a];
 
 yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + (C*M_eta);
-yk = yk'; % As√≠ tiene la forma de Pos
+yk = yk'; % AsÌ tiene la forma de Pos
 
 R = factor_R*diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
 
@@ -91,17 +91,17 @@ Pk1_k1 = P;
 g = yk(1,:)';
 
 for i=1:cant_mediciones-1
-	% Predicci√≥n
+	% PredicciÛn
 	xk_k1 = Ad * xk1_k1;
 	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
 	gk = [innovaciones(yk(i,:),C,xk_k1)];
 
-	% Correcci√≥n
+	% CorrecciÛn
 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
 	xk_k = xk_k1 + Kk*(gk);
 	Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
 	
-	% Actualizaci√≥n
+	% ActualizaciÛn
 	xk1_k1 = xk_k;
 	Pk1_k1 = Pk_k;
 
@@ -120,21 +120,25 @@ grid
 plot(x(1,:),x(2,:),'LineWidth',3)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
-title('Estimaci√≥n');
-legend(['Estimada';'Medida';'Ruidosa']);
+title('EstimaciÛn');
+if(EsMatlab == 1)
+    legend('Estimada','Medida','Ruidosa');
+else
+    legend(['Estimada';'Medida';'Ruidosa']);
+end
 xlabel = 'Tiempo [s]';
-ylabel = 'Posici√≥n [m]';
+ylabel = 'PosiciÛn [m]';
 
-% Grafico del estado posici√≥n en funci√≥n del tiempo
+% Grafico del estado posiciÛn en funciÛn del tiempo
 figure
 hold on
 grid
 plot(x(1,:),'LineWidth',2)
 plot(x(2,:),'color',myGreen,'LineWidth',2)
-title('Estados de posici√≥n');
+title('Estados de posiciÛn');
 
 
-% Grafico del estado velocidad en funci√≥n del tiempo
+% Grafico del estado velocidad en funciÛn del tiempo
 figure
 hold on
 grid
@@ -143,7 +147,7 @@ plot(x(4,:),'color',myGreen,'LineWidth',2)
 title('Estados de velocidad');
 
 
-% Grafico del estado aceleraci√≥n en funci√≥n del tiempo
+% Grafico del estado aceleraciÛn en funciÛn del tiempo
 figure
 hold on
 grid
@@ -152,7 +156,7 @@ plot(x(6,:),'color',myGreen,'LineWidth',2)
 title('Estados de aceleraci√≥n');
 
 
-% Gr√°fico de correlaci√≥n de innovaciones (debe ser ruido blanco)
+% Gr·fico de correlaciÛn de innovaciones (debe ser ruido blanco)
 covx_g = xcorr(g(1,:)');
 covy_g = xcorr(g(2,:)');
 
