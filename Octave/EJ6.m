@@ -10,8 +10,8 @@ Tiempo = datos_str.tiempo;
 Pos = datos_str.Pos;
 Vel = datos_str.Vel;
 
-dim = 2;			% Se considera sÃ³lo x e y
-tipos_variables = 3;		% PosiciÃ³n, Velocidad, AceleraciÃ³n
+dim = 2;			% Se considera sólo x e y
+tipos_variables = 3;		% Posición, Velocidad, Aceleración
 cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
@@ -42,7 +42,7 @@ Ad =	[I	I.*T	(T.^2)/2.*I;
 	 I*0	I	T.*I;
 	 I*0	I*0	I;];
 
-Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %SÃ³lo para x e y
+Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %Sólo para x e y
 
 
 
@@ -77,10 +77,10 @@ M_eta = [randn(dim,cant_mediciones)*sigma_etap*bool_p;
        	randn(dim,cant_mediciones)*sigma_etaa*bool_a];
 
 yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + (C*M_eta);
-yk = yk'; % AsÃ­ tiene la forma de Pos
+yk = yk'; % Así tiene la forma de Pos
 
 R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
 
-%%% FunciÃ³n DARE %%%
+%%% Función DARE %%%
 
 [P_dare, Polos_Lazo_Cerrado, K_dare] = dare(Ad,Bk1,Qd,R);
