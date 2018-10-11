@@ -50,18 +50,18 @@ Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %SÃ³l
 % EJ 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-cov_p = [1 1]*100^2;
-cov_v = [1 1]*1;
-cov_a = [1 1]*0.1;
+cov_p = [1 1]*100^6;
+cov_v = [1 1]*100;
+cov_a = [1 1]*10;
 
 x0 = [40 -200 0 0 0 0]';
 P0_0 = diag([cov_p, cov_v, cov_a]);
 
 %% a)
 %%%%% y_k = [I 0 0] [pk vk ak]' + ruido \eta
-sigma_etap = 60;
-sigma_etav = 2;
-sigma_etaa = 0.1;
+sigma_etap = 100;
+sigma_etav = 10;
+sigma_etaa = 1;
 
 %%% Para hacer AWGN, randn(fila,col)*sigma_etap
 
@@ -119,12 +119,8 @@ x03 = x01;
 x04 = x02;
 x0_vec = [x01 x02 x03 x04];
 
-%	P0_01 = diag([100^4 100^4, 10^2 10^2, 10 10]);
-%	P0_02 = P0_01;
-%	P0_03 = diag([0.1 0.1, 1e-5 1e-5, 1e-7 1e-7]);
-%	P0_04 = P0_03;
-diag1_p = [100^4 100^4, 10^2 10^2, 10 10];
-diag2_p = [0.1 0.1, 1e-5 1e-5, 1e-7 1e-7];
+diag1_p = 100*[cov_p, cov_v, cov_a];
+diag2_p = 0.01*[cov_p, cov_v, cov_a];
 diag_vec = [diag1_p; diag1_p; diag2_p; diag2_p];
 
 
@@ -144,11 +140,6 @@ for l = 1:4
 		xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
 		Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
 		
-	% PARA HACER SIMETRICA P, ALEJANDOSE DEL VALOR VERDADERO	
-	%		% Para hacerlo simétrico
-	%		for i=1:2
-	%			Pk_k=(Pk_k+Pk_k')/2;
-	%		end
 	
 		% Actualización
 		xk1_k1 = xk_k;

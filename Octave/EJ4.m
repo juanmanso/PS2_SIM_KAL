@@ -20,7 +20,7 @@ cant_estados = tipos_variables * dim;
 % Selección de medición (se pueden múltiples opciones)
 bool_p = 1;
 bool_v = 1;
-bool_a = 0;
+bool_a = 1;
 
 % Selección de sesgo (sólo 1)
 bool_pb = 1;
@@ -58,12 +58,11 @@ Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %Sólo
 % EJERCICIO 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-cov_p = [1 1]*100^2;
-cov_v = [1 1]*1;
-cov_a = [1 1]*0.1;
+cov_p = [1 1]*100^6;
+cov_v = [1 1]*100;
+cov_a = [1 1]*10;
 
-%x0 = [40 -200 0 0 0 0]';
-x0 = [10 -50 0 0 0 0]';
+x0 = [40 -200 0 0 0 0]';
 P0_0 = diag([cov_p, cov_v, cov_a]);
 
 %% a)
@@ -124,8 +123,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Supongo que desconozco un sesgo a la vez
+b0_p = [300 200]';
+b0_v = [10 20]';
+b0_a = [2 1]';
 var_xib = 0;
-b0 = [0 0]';
+
+b0 = b0_p*bool_pb + b0_v*bool_vb + b0_a*bool_ab;
 cov_b = cov_p*bool_pb + cov_v*bool_vb + cov_a*bool_ab;
 
 % Redefino A y C suponiendo var de estado z = [x; b]

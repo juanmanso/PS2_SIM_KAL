@@ -22,10 +22,11 @@ cant_estados = tipos_variables * dim;
 %p_perdido_a = rand(1,dim)/2 + 0.5;  
 
 % Variables de configuración de la pérdida de datos
-val_max_perdido = 0.3;				% Se pierden 3 de 10 datos
-p_perdido_p = [0.1 0.1];
-p_perdido_v = [0.3 0.3]; 
-p_perdido_a = [0.5 0.5];   
+p_perdido = 0.1;				% Se pierden 3 de 10 datos
+p_perdido = 1-p_perdido;
+p_perdido_p = [1 1].*p_perdido;
+p_perdido_v = [1 1].*p_perdido; 
+p_perdido_a = [1 1].*p_perdido;    
 p_bernoulli = [p_perdido_p, p_perdido_v, p_perdido_a];
 
 % Hay mediciones de:
@@ -65,18 +66,18 @@ Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]); %Sólo
 % EJ 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-cov_p = [1 1]*100^2;
-cov_v = [1 1]*1;
-cov_a = [1 1]*0.1;
+cov_p = [1 1]*100^6;
+cov_v = [1 1]*100;
+cov_a = [1 1]*10;
 
 x0 = [40 -200 0 0 0 0]';
 P0_0 = diag([cov_p, cov_v, cov_a]);
 
 %% a)
 %%%%% y_k = [I 0 0] [pk vk ak]' + ruido \eta
-sigma_etap = 60;
-sigma_etav = 2;
-sigma_etaa = 0.1;
+sigma_etap = 100;
+sigma_etav = 10;
+sigma_etaa = 1;
 
 %%% Para hacer AWGN, randn(fila,col)*sigma_etap
 
