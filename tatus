@@ -1,0 +1,33 @@
+[1mdiff --git a/Octave/EJ2_full.m b/Octave/EJ2_full.m[m
+[1mindex d66acf2..f281578 100644[m
+[1m--- a/Octave/EJ2_full.m[m
+[1m+++ b/Octave/EJ2_full.m[m
+[36m@@ -122,11 +122,13 @@[m [mplot(yk(:,1),yk(:,2),'color',myGreen)[m
+ title('Estimación de la trayectoria - Medición de $p$');[m
+ if(EsMatlab == 1)[m
+     legend('Estimada','Medida','Ruidosa','location','SouthEast');[m
+[32m+[m[32m    xlabel('Posición x');[m
+[32m+[m[32m    ylabel('Posición y');[m
+ else[m
+     legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');[m
+[32m+[m[32m    xlabel('Posición $x$ [\si{\m}]');[m
+[32m+[m[32m    ylabel('Posición $y$ [\si{\m}]');[m
+ end[m
+[31m-xlabel('Posición $x$ [\si{\m}]');[m
+[31m-ylabel('Posición $y$ [\si{\m}]');[m
+ return;[m
+ [m
+ % Grafico del estado posición en función del tiempo[m
+[1mdiff --git a/Octave/config_m.m b/Octave/config_m.m[m
+[1mindex 76e33c0..e39961f 100644[m
+[1m--- a/Octave/config_m.m[m
+[1m+++ b/Octave/config_m.m[m
+[36m@@ -7,7 +7,7 @@[m [mclear all, close all;[m
+ %EsMatlab = 1;[m
+ EsMatlab = sum(sum(ismember(struct2cell(ver),'MATLAB'))); % Chequeo automático de MATLAB[m
+ if(EsMatlab == 0)[m
+[31m-    graphics_toolkit("gnuplot");[m
+[32m+[m[32m    graphics_toolkit('gnuplot');[m
+ end[m
+ [m
+ format long;[m

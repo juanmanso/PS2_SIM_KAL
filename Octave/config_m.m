@@ -7,7 +7,7 @@ clear all, close all;
 %EsMatlab = 1;
 EsMatlab = sum(sum(ismember(struct2cell(ver),'MATLAB'))); % Chequeo automático de MATLAB
 if(EsMatlab == 0)
-    graphics_toolkit("gnuplot");
+    graphics_toolkit('gnuplot');
 end
 
 format long;

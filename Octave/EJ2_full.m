@@ -122,11 +122,13 @@ plot(yk(:,1),yk(:,2),'color',myGreen)
 title('Estimación de la trayectoria - Medición de $p$');
 if(EsMatlab == 1)
     legend('Estimada','Medida','Ruidosa','location','SouthEast');
+    xlabel('Posición x');
+    ylabel('Posición y');
 else
     legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+    xlabel('Posición $x$ [\si{\m}]');
+    ylabel('Posición $y$ [\si{\m}]');
 end
-xlabel('Posición $x$ [\si{\m}]');
-ylabel('Posición $y$ [\si{\m}]');
 return;
 
 % Grafico del estado posición en función del tiempo

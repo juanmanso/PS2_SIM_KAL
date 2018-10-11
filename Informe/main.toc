@@ -1,0 +1,12 @@
+\babel@toc {spanish}{}
+\contentsline {part}{I\hspace {1em}Enunciado}{1}{part.1}
+\contentsline {section}{\numberline {1}Ejercicio 1 \\ Modelo en variables de estado}{1}{section.1}
+\contentsline {subsection}{\numberline {1.1}Inciso a}{1}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Inciso b}{1}{subsection.1.2}
+\contentsline {section}{\numberline {2}Ejercicio 2 \\ Estimaci\IeC {\'o}n de la trayectoria con distintas mediciones}{2}{section.2}
+\contentsline {section}{\numberline {3}Ejercicio 3 \\ Estimaci\IeC {\'o}n con distintos valores inciales}{6}{section.3}
+\contentsline {section}{\numberline {4}Ejercicio 4 \\ Estimaci\IeC {\'o}n suponiendo sesgo en alg\IeC {\'u}n estado}{10}{section.4}
+\contentsline {section}{\numberline {5}Ejercicio 5 \\ Diferencias entre las estimaciones seg\IeC {\'u}n magnitud de $R$}{10}{section.5}
+\contentsline {section}{\numberline {6}Ejercicio 6 \\ Kalman en estado estacionario}{10}{section.6}
+\contentsline {section}{\numberline {7}Ejercicio 7 \\ Perdida de datos}{10}{section.7}
+\contentsline {section}{\numberline {8}Conclusiones}{10}{section.8}
