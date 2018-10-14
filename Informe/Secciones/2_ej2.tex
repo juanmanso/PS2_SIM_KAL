@@ -1,4 +1,81 @@
 
+	El algoritmo de Kalman se basa en poder estimar el vector de estados a partir de la dinámica del sistema y las mediciones. Para la definición del algoritmo utilizaremos la siguiente notación. Llamaremos:
+	
+	\begin{equation*}
+		\vect{x_{k/k - 1}}
+	\end{equation*}
+	
+	A la mejor estimación de el vector de estados utilizando información hasta el instante $k - 1$. Es decir se trata de una predicción. Llamaremos a la matriz de covarianza del error de dicha estimacion:
+	
+	\begin{equation*}
+		\vect{P_{k/k - 1}}
+	\end{equation*}
+	
+	Por otro lado llamaremos a:
+	
+	\begin{equation*}
+		\vect{x_{k/k}}
+	\end{equation*}
+	
+	A la mejor estimación del vector de estados utilizando información hasta el instante $k$. Dicha estimación será el resultado final del algoritmo y la matriz de covarianza del error del mismo será:
+	
+	\begin{equation*}
+		\vect{P_{k/k - 1}}
+	\end{equation*}
+
+	Cabe aclarar que cuando decimos mejor estimador, hacemos referencia a que se trata del que minimiza el error cuadrático medio. Dicho todo esto, presentamos el algoritmo de Kalman para poder realizar la estimación de la trayectoria.
+	
+		\subsection{Algoritmo de Kalman}
+			\paragraph{Inicialización}
+				Es la etapa en la que definimos el estado inicial de la estimación, para poder inicializar el algoritmo necesitamos una estadistica del estado inicial del sistema:
+				
+				\begin{equation*}
+					\vect{x_{0/0}} \leftarrow E\left[\vect{x_{0}}\right]
+				\end{equation*}
+				
+				\begin{equation*}
+					P_{0/0} \leftarrow COV\left[\vect{x_{0}}\right]
+				\end{equation*}
+			\paragraph{Predicción}
+				Es la etapa en la que realizarmos una predicción del futuro estado del sistema utilizando el modelo en el espacio de estados:
+				
+				\begin{equation*}
+					\vect{x_{k/k - 1}} \leftarrow Ad_{k - 1} \vect{x_{k - 1/k - 1}}
+				\end{equation*}
+				
+				\begin{equation*}
+					P_{k/k - 1} \leftarrow Ad_{k - 1} P_{k - 1 / k - 1} Ad_{k - 1}^{*} + Bd_{k - 1} Q_{k - 1} Bd_{k - 1}^{*}
+				\end{equation*}
+			\paragraph{Corrección}
+				Es la etapa en la que corregimos la predicción con el valor de la medición, para ello necesitamos calcular la matriz de ganancia de Kalman $K_{k}$:
+				
+				\begin{equation*}
+					K_{k} \leftarrow P_{k / k - 1} Cd_{k}^{*} (Cd_{k} P_{k/k - 1} Cd_{k}^{*} + R_{k})^{-1}
+				\end{equation*}
+				
+				Luego corregimos:
+				
+				\begin{equation*}
+					\vect{x_{k/k}} \leftarrow \vect{x_{k/k - 1}} + K_{k} (y_{k} - Cd_{k} \vect{x_{k/k - 1}})
+				\end{equation*}
+				
+				\begin{equation*}
+					P_{k/k} \leftarrow (I - K_{k} Cd_{k}) P_{k/k - 1}
+				\end{equation*}
+					
+			\paragraph{Actualización}
+				Es la etapa del algoritmo que pasamos al siguiente instante k.
+				
+				\begin{equation*}
+					\vect{x_{k - 1/k - 1}} \leftarrow \vect{x_{k/k}}
+				\end{equation*}
+				
+				\begin{equation*}
+					P_{k - 1/k - 1} \leftarrow P_{k/k}
+				\end{equation*}
+	
+	A continuación presentamos el script de MATLAB que implementa el algoritmo. Se puede seleccionar si se esta midiendo posicion, velocidad o aceleracion.
+
 	\begin{lstlisting}[caption=\emph{Script} para la resolución del ejercicio 2]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EJERCICIO 2
@@ -30,7 +107,6 @@ R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1
 yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + (C*M_eta);
 yk = yk'; % Así tiene la forma de Pos
 
-
 %%% ALGORITMO %%%%
 x = x0;
 P = P0_0;
@@ -60,10 +136,18 @@ for i=1:cant_mediciones-1
 	P = [P; Pk_k];
 end
 	\end{lstlisting}
+	
+	\subsection{Resultados}
+		\subsubsection{Medición De Posición}
+			A continuación presentamos el resultado del algoritmo, para el caso en que medimos posición. Puede verse que ante una medición ruidosa en posición, la desviación de la estimación que realiza el algoritmo de Kalman respecto del valor real es menor que si solo se utilizara la información del sensor sin procesar.
 
-	\graficarEPS{1.0}{graf_ej2a}{Trayectoria del vehículo estimando a partir de $p$.}{fig:ej2a}
-	\graficarEPS{1.0}{graf_ej2b}{Trayectoria del vehículo estimando a partir de $v$.}{fig:ej2b}
-	\graficarEPS{1.0}{graf_ej2c}{Trayectoria del vehículo estimando a partir de $a$.}{fig:ej2c}
+		\graficarEPS{1.0}{graf_ej2a}{Trayectoria del vehículo estimando a partir de $p$.}{fig:ej2a}
+		
+		\subsubsection{Medición De Velocidad}
+			\graficarEPS{1.0}{graf_ej2b}{Trayectoria del vehículo estimando a partir de $v$.}{fig:ej2b}
+			
+		\subsubsection{Medición De Aceleración}
+			\graficarEPS{1.0}{graf_ej2c}{Trayectoria del vehículo estimando a partir de $a$.}{fig:ej2c}
 
 %*% C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];	% Obsoleto
 %*%C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
