@@ -16,8 +16,8 @@ cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
 bool_p = 0;
-bool_v = 1;
-bool_a = 0;
+bool_v = 0;
+bool_a = 1;
 
 %%%%%%%%%%%%%%
 %%% 1a Defina las variables de estado
@@ -117,16 +117,26 @@ h=figure;
 subplot(2,2,1);
 hold on
 grid
-plot(yk(:,1),yk(:,2),'color',myGreen)
+if bool_p
+    plot(yk(:,1),yk(:,2),'color',myGreen)
+end
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(x(1,:),x(2,:),'--b','LineWidth',2)
 title('Estimación de la trayectoria');
 if(EsMatlab == 1)
-    legend('Medición','Real','Estimada','location','SouthEast');
+    if bool_p
+        legend('Medición','Real','Estimada','location','SouthEast');
+    else
+        legend('Real','Estimada','location','SouthEast');
+    end
     xlabel('Posición x');
     ylabel('Posición y');
 else
-    legend(['Medición';'Real';'Estimada'],'location','SouthEast');
+    if bool_p
+        legend(['Medición';'Real';'Estimada'],'location','SouthEast');
+    else
+        legend(['Real';'Estimada'],'location','SouthEast');
+    end
     xlabel('Posición $x$ [\si{\m}]');
     ylabel('Posición $y$ [\si{\m}]');
 end
@@ -151,6 +161,10 @@ legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
 subplot(2,2,3);
 hold on
 grid
+if bool_v
+    plot(yk(:,1),'--');
+    plot(yk(:,2),'--');
+end
 plot(Vel(:,1),'LineWidth',2)
 plot(Vel(:,2),'LineWidth',2)
 plot(x(3,:),'--','LineWidth',2)
@@ -158,7 +172,11 @@ plot(x(4,:),'--','color',myGreen,'LineWidth',2)
 ylabel('Velocidad');
 xlabel('Tiempo');
 title('Estados de velocidad');
-legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+if bool_v
+    legend('Medida x','Medida y','Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+else
+    legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+end
 
 
 % Grafico del estado aceleración en función del tiempo
@@ -166,6 +184,10 @@ legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
 subplot(2,2,4);
 hold on
 grid
+if bool_a
+    plot(yk(:,1),'--');
+    plot(yk(:,2),'--');
+end
 plot(Acel(:,1),'LineWidth',2)
 plot(Acel(:,2),'LineWidth',2)
 plot(x(5,:),'--','LineWidth',2)
@@ -173,7 +195,11 @@ plot(x(6,:),'--','color',myGreen,'LineWidth',2)
 ylabel('Aceleración');
 xlabel('Tiempo');
 title('Estados de aceleración');
-legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+if bool_a
+    legend('Medida x','Medida y','Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+else
+    legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+end
 
 h.Position=[0 0 1200 700];
 if bool_p
