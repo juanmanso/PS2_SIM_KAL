@@ -15,8 +15,8 @@ tipos_variables = 3;		% Posición, Velocidad, Aceleración
 cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
-bool_p = 1;
-bool_v = 0;
+bool_p = 0;
+bool_v = 1;
 bool_a = 0;
 
 %%%%%%%%%%%%%%
@@ -113,68 +113,105 @@ end
 
 
 % Grafico de medida, estimada, ruidosa
-figure
+h=figure;
+subplot(2,2,1);
 hold on
 grid
-plot(x(1,:),x(2,:),'LineWidth',3)
-plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
-title('Estimación de la trayectoria - Medición de $p$');
+plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(x(1,:),x(2,:),'--b','LineWidth',2)
+title('Estimación de la trayectoria');
 if(EsMatlab == 1)
-    legend('Estimada','Medida','Ruidosa','location','SouthEast');
+    legend('Medición','Real','Estimada','location','SouthEast');
     xlabel('Posición x');
     ylabel('Posición y');
 else
-    legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+    legend(['Medición';'Real';'Estimada'],'location','SouthEast');
     xlabel('Posición $x$ [\si{\m}]');
     ylabel('Posición $y$ [\si{\m}]');
 end
-return;
 
 % Grafico del estado posición en función del tiempo
-figure
+%figure
+subplot(2,2,2);
 hold on
 grid
-plot(x(1,:),'LineWidth',2)
-plot(x(2,:),'color',myGreen,'LineWidth',2)
+plot(Pos(:,1),'LineWidth',2)
+plot(Pos(:,2),'LineWidth',2)
+plot(x(1,:),'--','LineWidth',2)
+plot(x(2,:),'--','color',myGreen,'LineWidth',2)
+ylabel('Posición');
+xlabel('Tiempo');
 title('Estados de posición');
+legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
 
 
 % Grafico del estado velocidad en función del tiempo
-figure
+% figure
+subplot(2,2,3);
 hold on
 grid
-plot(x(3,:),'LineWidth',2)
-plot(x(4,:),'color',myGreen,'LineWidth',2)
+plot(Vel(:,1),'LineWidth',2)
+plot(Vel(:,2),'LineWidth',2)
+plot(x(3,:),'--','LineWidth',2)
+plot(x(4,:),'--','color',myGreen,'LineWidth',2)
+ylabel('Velocidad');
+xlabel('Tiempo');
 title('Estados de velocidad');
+legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
 
 
 % Grafico del estado aceleración en función del tiempo
-figure
+% figure
+subplot(2,2,4);
 hold on
 grid
-plot(x(5,:),'LineWidth',2)
-plot(x(6,:),'color',myGreen,'LineWidth',2)
+plot(Acel(:,1),'LineWidth',2)
+plot(Acel(:,2),'LineWidth',2)
+plot(x(5,:),'--','LineWidth',2)
+plot(x(6,:),'--','color',myGreen,'LineWidth',2)
+ylabel('Aceleración');
+xlabel('Tiempo');
 title('Estados de aceleración');
+legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
 
+h.Position=[0 0 1200 700];
+if bool_p
+    print('../Informe/Figuras/graf_ej2a','-deps');
+elseif bool_v
+    print('../Informe/Figuras/graf_ej2b','-deps');
+elseif bool_a
+    print('../Informe/Figuras/graf_ej2c','-deps');
+end
 
 % Gráfico de correlación de innovaciones (debe ser ruido blanco)
 covx_g = xcorr(g(1,:)');
 covy_g = xcorr(g(2,:)');
 
 figure
+subplot(211)
 plot(covx_g)
 grid
 title('Covarianza innovaciones x')
 
-figure
+% figure
+subplot(212)
 plot(covy_g)
 grid
 title('Covarianza innovaciones y')
+
+if bool_p
+    print('../Informe/Figuras/covinn_ej2a','-deps');
+elseif bool_v
+    print('../Informe/Figuras/covinn_ej2b','-deps');
+elseif bool_a
+    print('../Informe/Figuras/covinn_ej2c','-deps');
+end
 
 % Observabilidad
 Obs = obsv(Ad,C);
 rango_obs = rank(Obs);
 estados_no_observables = cant_estados - rango_obs
+
 
 
