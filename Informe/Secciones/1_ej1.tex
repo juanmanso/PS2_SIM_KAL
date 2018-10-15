@@ -46,6 +46,7 @@
 	El siguiente bloque de código contiene la definición de las matrices $A_{d}$ y $Q_{d}$ que utilizaremos.
 
 	\begin{lstlisting}
+	
 config_m;
 
 datos_str = load('datos.mat');
@@ -77,8 +78,8 @@ Ad =[I		I.*T	(T.^2)/2.*I;
 
 % Covarianza del ruido de proceso
 Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]);
+
 	\end{lstlisting}
-	
 	
 % $Q_d=\begin{bmatrix} \sigma^2_{\xi_{px}} &&&&&\\[0.3em] &\sigma^2_{\xi_{py}}&&&&\\[0.3em] &&\sigma^2_{\xi_{vx}}&&&\\[0.3em] &&&\sigma^2_{\xi_{vy}}&&\\[0.3em] &&&&\sigma^2_{\xi_{ax}}&\\[0.3em] &&&&&\sigma^2_{\xi_{ay}}\end{bmatrix}$
 

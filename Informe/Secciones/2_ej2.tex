@@ -74,69 +74,10 @@
 					P_{k - 1/k - 1} \leftarrow P_{k/k}
 				\end{equation*}
 	
-	A continuación presentamos el script de MATLAB que implementa el algoritmo. Se puede seleccionar si se esta midiendo posicion, velocidad o aceleracion.
-
-	\begin{lstlisting}[caption=\emph{Script} para la resolución del ejercicio 2]
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EJERCICIO 2
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-bool_p = 1;	% Inciso a
-bool_v = 0;	% Inciso b
-bool_a = 0;	% Inciso c
-
-
-x0 = [40 -200 0 0 0 0]';
-P0_0 = diag([100^2 100^2, 1 1, 0.1 0.1]);
-
-%%%%% y_k = [I 0 0] [pk vk ak]' + ruido \eta
-sigma_etap = 60;
-sigma_etav = 2;
-sigma_etaa = 0.1;
-
-Bk1 = eye(cant_estados);
-C =	[eye(dim*bool_p) zeros(dim*bool_p) zeros(dim*bool_p);
-	 zeros(dim*bool_v) eye(dim*bool_v) zeros(dim*bool_v);
-	 zeros(dim*bool_a) zeros(dim*bool_a) eye(dim*bool_a)];
-
-M_eta = [randn(dim,cant_mediciones)*sigma_etap*bool_p; 
-	randn(dim,cant_mediciones)*sigma_etav*bool_v;
-       	randn(dim,cant_mediciones)*sigma_etaa*bool_a];
-
-R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
-
-yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + (C*M_eta);
-yk = yk'; % Así tiene la forma de Pos
-
-%%% ALGORITMO %%%%
-x = x0;
-P = P0_0;
-xk1_k1 = x;
-Pk1_k1 = P;
-g = yk(1,:)';
-
-for i=1:cant_mediciones-1
-	% Predicción
-	xk_k1 = Ad * xk1_k1;
-	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1.';
-	gk = [innovaciones(yk(i,:),C,xk_k1)];
-
-	% Corrección
-	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
-	xk_k = xk_k1 + Kk*(gk);
-	Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
+	A continuación presentamos el script de MATLAB que implementa el algoritmo. Se puede seleccionar si se esta midiendo posicion, velocidad o aceleracion, estableciendo las variables bool\_p, bool\_v o bool\_a en 1 o en 0 para indicar que se esta midiendo;
 	
-	% Actualización
-	xk1_k1 = xk_k;
-	Pk1_k1 = Pk_k;
+	%\lstinputlisting[]{../Octave/EJ2_full.m}
 
-
-	% Guardo
-	g = [g gk];
-	x = [x xk_k];
-	P = [P; Pk_k];
-end
-	\end{lstlisting}
-	
 	\subsection{Resultados}
 		\subsubsection{Medición De Posición}
 			En la figura \ref{fig:ej2a} observamos los resultados de la estimación basada en mediciones de posición. Puede verse que la estimación se desvía menos del valor real que las mediciones.
