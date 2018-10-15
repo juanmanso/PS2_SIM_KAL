@@ -139,15 +139,63 @@ end
 	
 	\subsection{Resultados}
 		\subsubsection{Medición De Posición}
-			A continuación presentamos el resultado del algoritmo, para el caso en que medimos posición. Puede verse que ante una medición ruidosa en posición, la desviación de la estimación que realiza el algoritmo de Kalman respecto del valor real es menor que si solo se utilizara la información del sensor sin procesar.
+			En la figura \ref{fig:ej2a} observamos los resultados de la estimación basada en mediciones de posición. Puede verse que la estimación se desvía menos del valor real que las mediciones.
 
-		\graficarEPS{1.0}{graf_ej2a}{Trayectoria del vehículo estimando a partir de $p$.}{fig:ej2a}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.8\textwidth,keepaspectratio]{Figuras/graf_ej2a.pdf}
+			\caption{Caso: Medición De Posición}
+			\label{fig:ej2a}
+		\end{figure}
+		
+		En la figura \ref{fig:ej2a_innov} vemos la correlación de las innovaciones, puede verse de que se aproximan a un proceso blanco.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.8\textwidth,keepaspectratio]{Figuras/covinn_ej2a.pdf}
+			\caption{Caso: Medición De Posición - Innovaciones}
+			\label{fig:ej2a_innov}
+		\end{figure}
 		
 		\subsubsection{Medición De Velocidad}
-			\graficarEPS{1.0}{graf_ej2b}{Trayectoria del vehículo estimando a partir de $v$.}{fig:ej2b}
+		
+		En la figura \ref{fig:ej2b} observamos los resultados de la estimación basada en mediciones de velocidad. Puede verse que la estimación se desvía menos del valor real que las mediciones.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.8\textwidth,keepaspectratio]{Figuras/graf_ej2b.pdf}
+			\caption{Caso: Medición De Velocidad}
+			\label{fig:ej2b}
+		\end{figure}
+		
+		En la figura \ref{fig:ej2b_innov} vemos la correlación de las innovaciones, puede verse de que se aproximan a un proceso blanco.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.8\textwidth,keepaspectratio]{Figuras/covinn_ej2b.pdf}
+			\caption{Caso: Medición De Velocidad - Innovaciones}
+			\label{fig:ej2b_innov}
+		\end{figure}
 			
 		\subsubsection{Medición De Aceleración}
-			\graficarEPS{1.0}{graf_ej2c}{Trayectoria del vehículo estimando a partir de $a$.}{fig:ej2c}
+		
+		En la figura \ref{fig:ej2c} observamos los resultados de la estimación basada en mediciones de aceleración. Puede verse que la estimación se desvía menos del valor real que las mediciones.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.8\textwidth,keepaspectratio]{Figuras/graf_ej2c.pdf}
+			\caption{Caso: Medición De Aceleración}
+			\label{fig:ej2c}
+		\end{figure}
+		
+		En la figura \ref{fig:ej2c_innov} vemos la correlación de las innovaciones, puede verse de que se aproximan a un proceso blanco.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.8\textwidth,keepaspectratio]{Figuras/covinn_ej2c.pdf}
+			\caption{Caso: Medición De Aceleración - Innovaciones}
+			\label{fig:ej2c_innov}
+		\end{figure}
 
 %*% C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];	% Obsoleto
 %*%C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
