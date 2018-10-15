@@ -27,6 +27,9 @@ bool_pb = 1;
 bool_vb = 0;
 bool_ab = 0;
 
+% Selección de impresión de imágenes
+bool_print = 1;
+
 % Supongo que desconozco un sesgo a la vez
 b0_p = [300 200]';
 b0_v = [10 20]';
@@ -178,24 +181,89 @@ for i=1:cant_mediciones-1
 end
 
 % Grafico de medida, estimada, ruidosa
-figure
+h1=figure;
+subplot(221)
 hold on
 grid
-plot(x(1,:),x(2,:),'LineWidth',3)
-plot(xb(1,:),xb(2,:),'LineWidth',3, 'color', myGreen)
+plot(yk(:,1),yk(:,2))
+plot(x(1,:),x(2,:),'m','LineWidth',2)
+plot(xb(1,:),xb(2,:),'LineWidth',2, 'color', myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
-plot(yk(:,1),yk(:,2),'color','k')
 title('Estimacion');
 if(EsMatlab == 1)
-    legend('Estimación sin estimar sesgo', 'Estimada estimando sesgo','Estado','Medido','location','SouthEast');
+    legend('Medido','Estimación sin estimar sesgo', 'Estimada estimando sesgo','Estado','location','SouthEast');
 else 
-    legend(['Estimación sin estimar sesgo'; 'Estimada estimando sesgo';'Estado';'Medido'],'location','SouthEast');
+    legend(['Medido';'Estimación sin estimar sesgo'; 'Estimada estimando sesgo';'Estado'],'location','SouthEast');
 end
 xlabel = 'Tiempo [s]';
 ylabel = 'Posición [m]';
 
+
+% Grafico del estado posición en función del tiempo
+% figure
+subplot(222)
+hold on
+grid
+plot(x(1,:),'LineWidth',2)
+plot(xb(1,:),'--','LineWidth',2)
+plot(Pos(:,1));
+plot(x(2,:),'LineWidth',2)
+plot(xb(2,:),'--','LineWidth',2)
+plot(Pos(:,2));
+if(EsMatlab == 1)
+    legend('px s/sesgo','px c/sesgo','Estado px','py s/sesgo','py c/sesgo','Estado py','location','SouthWest')
+else 
+    legend(['px s/sesgo';'px c/sesgo';'Estado px';'py s/sesgo';'py c/sesgo';'Estado py'],'location','SouthWest')
+end
+title('Estados de posición');
+
+% Grafico del estado velocidad en función del tiempo
+% figure
+subplot(223)
+hold on
+grid
+plot(x(3,:),'LineWidth',2)
+plot(xb(3,:),'--','LineWidth',2)
+plot(Vel(:,1),'b','LineWidth',1);
+plot(x(4,:),'LineWidth',2)
+plot(xb(4,:),'--','color',myGreen,'LineWidth',2)
+plot(Vel(:,2),'r','LineWidth',1);
+
+if(EsMatlab == 1)
+    legend('Vx s/sesgo','Vx c/sesgo','Estado Vx','Vy s/sesgo','Vy c/sesgo','Estado Vy','location','SouthEast')
+else 
+    legend(['Vx s/sesgo';'Vx c/sesgo';'Estado Vx';'Vy s/sesgo';'Vy c/sesgo';'Estado Vy'],'location','SouthEast')
+end
+title('Estados de velocidad');
+
+% Grafico del estado aceleración en función del tiempo
+% figure
+subplot(224)
+hold on
+grid
+plot(x(5,:),'LineWidth',2)
+plot(xb(5,:),'--','LineWidth',2)
+plot(Acel(:,1),'b','LineWidth',1);
+plot(x(6,:),'LineWidth',2)
+plot(xb(6,:),'--','color',myGreen,'LineWidth',2)
+plot(Acel(:,2),'r','LineWidth',1);
+
+if(EsMatlab == 1)
+    legend('Ax s/sesgo','Ax c/sesgo','Estado Ax','Ay s/sesgo','Ay c/sesgo','Estado Ay','location','SouthEast')
+else
+    legend(['Ax s/sesgo';'Ax c/sesgo';'Estado Ax';'Ay s/sesgo';'Ay c/sesgo';'Estado Ay'],'location','SouthEast')
+end
+title('Estados de aceleración');
+
+h1.Position=[0 0 1200 700];
+h1.PaperUnits='points';
+h1.PaperSize=[1200 700];
+if bool_print
+    print('../Informe/Figuras/graf_ej4b','-dpdf','-bestfit');
+end
+
 % Grafico de estimación de sesgo
-figure
+h2=figure;
 hold on
 grid
 plot(xb(7,:),'LineWidth',3)
@@ -209,84 +277,39 @@ end
 xlabel = 'Tiempo [s]';
 ylabel = 'Posición [m]';
 
-% Grafico del estado posición en función del tiempo
-figure
-hold on
-grid
-plot(x(1,:),'LineWidth',2)
-plot(xb(1,:),'color',myGreen,'LineWidth',2)
-if(EsMatlab == 1)
-    legend('Sin sesgo','Con sesgo')
-else 
-    legend(['Sin sesgo';'Con sesgo'])
+wsize=[h2.Position(3) h2.Position(4)];
+h2.PaperUnits='points';
+h2.PaperSize=wsize;
+if bool_print
+    print('../Informe/Figuras/bias_ej4b','-dpdf','-bestfit');
 end
-title('Estados de posición en x');
 
-% Grafico del estado posición en función del tiempo
-figure
-hold on
-grid
-plot(x(2,:),'LineWidth',2)
-plot(xb(2,:),'color',myGreen,'LineWidth',2)
-if(EsMatlab == 1)
-    legend('Sin sesgo','Con sesgo')
-else 
-    legend(['Sin sesgo';'Con sesgo'])
-end
-title('Estados de posición en y');
-
-
-
-% Grafico del estado velocidad en función del tiempo
-figure
-hold on
-grid
-plot(x(3,:),'LineWidth',2)
-plot(xb(3,:),'--','LineWidth',2)
-plot(Vel(:,1),'b','LineWidth',1);
-plot(x(4,:),'LineWidth',2)
-plot(xb(4,:),'--','color',myGreen,'LineWidth',2)
-plot(Vel(:,2),'r','LineWidth',1);
-
-if(EsMatlab == 1)
-    legend('Vx Sin sesgo','Vx Con sesgo','Estado Vx','Vy Sin sesgo','Vy Con sesgo','Estado Vy')
-else 
-    legend(['Vx Sin sesgo';'Vx Con sesgo';'Estado Vx';'Vy Sin sesgo';'Vy Con sesgo';'Estado Vy'])
-end
-title('Estados de velocidad');
-
-
-% Grafico del estado aceleración en función del tiempo
-figure
-hold on
-grid
-plot(x(5,:),'LineWidth',2)
-plot(xb(5,:),'--','LineWidth',2)
-plot(Acel(:,1),'b','LineWidth',1);
-plot(x(6,:),'LineWidth',2)
-plot(xb(6,:),'--','color',myGreen,'LineWidth',2)
-plot(Acel(:,2),'r','LineWidth',1);
-
-if(EsMatlab == 1)
-    legend('Ax Sin sesgo','Ax Con sesgo','Estado Ax','Ay Sin sesgo','Ay Con sesgo','Estado Ay')
-else 
-    legend(['Ax Sin sesgo';'Ax Con sesgo';'Estado Ax';'Ay Sin sesgo';'Ay Con sesgo';'Estado Ay'])
-end
-title('Estados de aceleración');
 
 % Gráfico de correlación de innovaciones (debe ser ruido blanco)
 covx_g = xcorr(g(1,:)');
 covy_g = xcorr(g(2,:)');
 
-figure
+h3=figure;
+subplot(211)
 plot(covx_g)
 grid
+axis tight;
 title('Covarianza innovaciones x')
 
-figure
+% figure
+subplot(212)
 plot(covy_g)
 grid
+axis tight;
 title('Covarianza innovaciones y')
+
+
+wsize=[h3.Position(3) h3.Position(4)];
+h3.PaperUnits='points';
+h3.PaperSize=wsize;
+if bool_print
+    print('../Informe/Figuras/covinn_ej4b','-dpdf','-bestfit');
+end
 
 
 % Observabilidad
@@ -294,4 +317,3 @@ Obs = obsv(Ad,C);
 rango_obs = rank(Obs);
 estados_no_observables = (cant_estados) - rango_obs
 
-fprintf('GUORNING: CORREGIR GRÁFICOS DE POSICIÓN EN X E Y\r\n')
