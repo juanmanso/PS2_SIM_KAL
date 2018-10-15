@@ -1,60 +1,6 @@
 
 	En el punto anterior se describió el algoritmo de Kalman. En dicho algoritmo hay una fase de inicialización de la estimación. En este punto intentaremos exponer las variantes que se presentan a la hora de inicializar. Por ejemplo podemos inicializar en un valor correcto, con una varianza pequeña, en cuyo caso la estimación convergerá mas rapido. Otro caso extremo es cuando inicializamos con un valor incorrecto, tambien con varianza pequeña, en cuyo caso la estimación convergerá en forma mucho mas lenta. La idea de este punto es explorar las distintas variantes de este tema. Para cada caso presentaremos gráficos de la estimación de la trayectoria, de evolucion de los errores, y de la autocorrelación de las innovaciones.
 	
-	A continuacion presentamos el código de esta sección. Basicamente realiza lo mismo que el punto anterior, pero para distintas condiciones iniciales.
-
-	\begin{lstlisting}[caption = Parte del \emph{Script} utilizado para el ejercicio 3]
-% Nuevos datos
-x01 = [40 -200 0 0 0 0]';
-x02 = [200 -3000 0 0 0 0]';
-x03 = x01;
-x04 = x02;
-x0_vec = [x01 x02 x03 x04];
-
-diag1_p = [100^4 100^4, 10^2 10^2, 10 10];
-diag2_p = [0.1 0.1, 1e-5 1e-5, 1e-7 1e-7];
-diag_vec = [diag1_p; diag1_p; diag2_p; diag2_p];
-
-
-for l = 1:4
-	xa = x0_vec(:,l);
-	Pa = diag(diag_vec(l,:));
-	xk1_k1 = xa;
-	Pk1_k1 = Pa;
-
-	for i = 1:cant_mediciones-1
-		% Predicción
-		xk_k1 = Ad * xk1_k1;
-		Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1.';
-	
-		% Corrección
-		Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
-		xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
-		Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
-		
-		% Actualización
-		xk1_k1 = xk_k;
-		Pk1_k1 = Pk_k;
-	
-	
-		% Guardo
-		xa = [xa xk_k];
-		Pa = [Pa; Pk_k];
-	end
-
-	if(l==1)
-		x1=xa; P1=Pa;
-	elseif(l==2)
-		x2=xa; P2=Pa;
-	elseif(l==3)
-		x3=xa; P3=Pa;
-	else
-		x4=xa; P4=Pa;
-	end
-	
-end
-	\end{lstlisting}
-	
 	\subsection{Caso 1}
 	
 		Para el primer caso, se tiene un error en la estimación del estado inicial pequeño, pero una varianza grande. En este caso el algoritmo convergerá rapidamente a la trayectoria real. El resultado puede verse en la figura \ref{fig:ej3a}.
@@ -98,4 +44,10 @@ end
 			\caption{Caso 4}
 			\label{fig:ej3d}
 		\end{figure}
+		
+	\subsection{Script}
+	
+		A continuacion presentamos el script de esta sección. Basicamente realiza lo mismo que el punto anterior, pero para distintas condiciones iniciales.
+
+	%\lstinputlisting[]{../Octave/EJ3.m}
 	

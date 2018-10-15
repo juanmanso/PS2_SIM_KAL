@@ -73,10 +73,6 @@
 				\begin{equation*}
 					P_{k - 1/k - 1} \leftarrow P_{k/k}
 				\end{equation*}
-	
-	A continuación presentamos el script de MATLAB que implementa el algoritmo. Se puede seleccionar si se esta midiendo posicion, velocidad o aceleracion, estableciendo las variables bool\_p, bool\_v o bool\_a en 1 o en 0 para indicar que se esta midiendo;
-	
-	%\lstinputlisting[]{../Octave/EJ2_full.m}
 
 	\subsection{Resultados}
 		\subsubsection{Medición De Posición}
@@ -138,9 +134,8 @@
 			\label{fig:ej2c_innov}
 		\end{figure}
 
-%*% C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];	% Obsoleto
-%*%C = [eye(dim)*bool_p eye(dim)*bool_v eye(dim)*bool_a];
-%*%
-%*%yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + randn(dim,cant_mediciones)*sigma_etap;
-
-%*R = eye(dim)*sigma_etap^2;
+	\subsection{Script}
+	
+		A continuación presentamos el script de MATLAB que implementa el algoritmo. Se puede seleccionar si se esta midiendo posicion, velocidad o aceleracion, estableciendo las variables bool\_p, bool\_v o bool\_a en 1 o en 0 para indicar que se esta midiendo.
+	
+	%\lstinputlisting[]{../Octave/EJ2_full.m}
