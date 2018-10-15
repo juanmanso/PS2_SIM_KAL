@@ -202,19 +202,21 @@ else
 end
 
 h.Position=[0 0 1200 700];
+h.PaperUnits='points';
+h.PaperSize=[1200 700];
 if bool_p
-    print('../Informe/Figuras/graf_ej2a','-dpdf');
+    print('../Informe/Figuras/graf_ej2a','-dpdf','-bestfit');
 elseif bool_v
-    print('../Informe/Figuras/graf_ej2b','-dpdf');
+    print('../Informe/Figuras/graf_ej2b','-dpdf','-bestfit');
 elseif bool_a
-    print('../Informe/Figuras/graf_ej2c','-dpdf');
+    print('../Informe/Figuras/graf_ej2c','-dpdf','-bestfit');
 end
 
 % Gráfico de correlación de innovaciones (debe ser ruido blanco)
 covx_g = xcorr(g(1,:)');
 covy_g = xcorr(g(2,:)');
 
-figure
+h2=figure
 subplot(211)
 plot(covx_g)
 grid
@@ -226,12 +228,15 @@ plot(covy_g)
 grid
 title('Covarianza innovaciones y')
 
+h2.Position=[0 0 1200 700];
+h2.PaperUnits='points';
+h2.PaperSize=[1200 700];
 if bool_p
-    print('../Informe/Figuras/covinn_ej2a','-dpdf');
+    print('../Informe/Figuras/covinn_ej2a','-dpdf','-bestfit');
 elseif bool_v
-    print('../Informe/Figuras/covinn_ej2b','-dpdf');
+    print('../Informe/Figuras/covinn_ej2b','-dpdf','-bestfit');
 elseif bool_a
-    print('../Informe/Figuras/covinn_ej2c','-dpdf');
+    print('../Informe/Figuras/covinn_ej2c','-dpdf','-bestfit');
 end
 
 % Observabilidad
