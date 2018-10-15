@@ -129,11 +129,13 @@ for l = 1:4
 	Pa = diag(diag_vec(l,:));
 	xk1_k1 = xa;
 	Pk1_k1 = Pa;
-
+    g = yk(1,:)';
+    
 	for i = 1:cant_mediciones-1
 		% Predicción
 		xk_k1 = Ad * xk1_k1;
 		Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
+        gk = [innovaciones(yk(i,:),C,xk_k1)];
 	
 		% Corrección
 		Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
@@ -147,18 +149,19 @@ for l = 1:4
 	
 	
 		% Guardo
+        g = [g gk];
 		xa = [xa xk_k];
 		Pa = [Pa; Pk_k];
 	end
 
 	if(l==1)
-		x1=xa; P1=Pa;
+		x1=xa; P1=Pa; g1=g;
 	elseif(l==2)
-		x2=xa; P2=Pa;
+		x2=xa; P2=Pa; g2=g;
 	elseif(l==3)
-		x3=xa; P3=Pa;
+		x3=xa; P3=Pa; g3=g;
 	else
-		x4=xa; P4=Pa;
+		x4=xa; P4=Pa; g4=g;
 	end
 	
 end
@@ -168,87 +171,218 @@ end
 figure
 hold on
 grid
-plot(x(1,:),x(2,:),'LineWidth',3)
+plot(yk(:,1),yk(:,2),'color',myGreen)
+plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(x(1,:),x(2,:),'--b','LineWidth',2)
 %	plot(x1(1,:),x1(2,:),'-','LineWidth',3,'color',[0 0.8 1])
 %	plot(x2(1,:),x2(2,:),'-','LineWidth',3,'color',[0.8 0.8 1])
 %	plot(x3(1,:),x3(2,:),'-','LineWidth',3,'color',[0.4 0.4 0.4])
 %	plot(x4(1,:),x4(2,:),'-','LineWidth',3,'color',[0.8 0.2 1])
-plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
-plot(yk(:,1),yk(:,2),'color',myGreen)
 title('Estimación');
 if(EsMatlab == 1)
-    legend('Estimada','Medida','Ruidosa','location','SouthEast');
+    legend('Medida','Real','Estimada','location','SouthEast');
+    xlabel('Posición x');
+    ylabel('Posición y');
 else
-    legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+    legend(['Medida';'Real','Estimada'],'location','SouthEast');
+    xlabel('Posición $x$ [\si{\m}]');
+    ylabel('Posición $y$ [\si{\m}]');
 end
-xlabel=('Posición $x$ [\si{\m}]');
-ylabel=('Posición $y$ [\si{\m}]');
-
 
 % Grafico de medida, estimada, ruidosa
-figure
+h1=figure;
+subplot(221)
 hold on
 grid
-plot(x1(1,:),x1(2,:),'LineWidth',3)
-plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
+plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(x1(1,:),x1(2,:),'--b','LineWidth',2)
 title('Estimación');
 if(EsMatlab == 1)
-    legend('Estimada','Medida','Ruidosa','location','SouthEast');
+    legend('Medida','Real','Estimada','location','SouthEast');
+    xlabel('Posición x');
+    ylabel('Posición y');
 else
-    legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+    legend(['Medida';'Real','Estimada'],'location','SouthEast');
+    xlabel('Posición $x$ [\si{\m}]');
+    ylabel('Posición $y$ [\si{\m}]');
 end
-xlabel=('Posición $x$ [\si{\m}]');
-ylabel=('Posición $y$ [\si{\m}]');
 
+% figure;
+subplot(222)
+plot(x'-x1');
+xlim([0 150]);
+title('Error de estimación');
+xlabel('Tiempo');
+legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
+
+covx_g1 = xcorr(g1(1,:)');
+covy_g1 = xcorr(g1(2,:)');
+
+% figure
+subplot(223)
+plot(covx_g1)
+grid
+title('Covarianza innovaciones x')
+axis tight;
+
+% figure
+subplot(224)
+plot(covy_g1)
+grid
+title('Covarianza innovaciones y')
+axis tight;
+
+h1.Position=[0 0 1200 700];
+h1.PaperUnits='points';
+h1.PaperSize=[1200 700];
+print('../Informe/Figuras/graf_ej3a','-dpdf','-bestfit');
 
 % Grafico de medida, estimada, ruidosa
-figure
+h2=figure;
+subplot(221)
 hold on
 grid
-plot(x2(1,:),x2(2,:),'LineWidth',3)
-plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
+plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(x2(1,:),x2(2,:),'--b','LineWidth',2)
 title('Estimación');
 if(EsMatlab == 1)
-    legend('Estimada','Medida','Ruidosa','location','SouthEast');
+    legend('Medida','Real','Estimada','location','SouthEast');
+    xlabel('Posición x');
+    ylabel('Posición y');
 else
-    legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+    legend(['Medida';'Real','Estimada'],'location','SouthEast');
+    xlabel('Posición $x$ [\si{\m}]');
+    ylabel('Posición $y$ [\si{\m}]');
 end
-xlabel=('Posición $x$ [\si{\m}]');
-ylabel=('Posición $y$ [\si{\m}]');
+
+% figure;
+subplot(222)
+plot(x'-x2');
+xlim([0 150]);
+title('Error de estimación');
+xlabel('Tiempo');
+legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
+
+covx_g2 = xcorr(g2(1,:)');
+covy_g2 = xcorr(g2(2,:)');
+
+% figure
+subplot(223)
+plot(covx_g2)
+grid
+title('Covarianza innovaciones x')
+axis tight;
+
+% figure
+subplot(224)
+plot(covy_g2)
+grid
+title('Covarianza innovaciones y')
+axis tight;
+
+h2.Position=[0 0 1200 700];
+h2.PaperUnits='points';
+h2.PaperSize=[1200 700];
+print('../Informe/Figuras/graf_ej3b','-dpdf','-bestfit');
 
 % Grafico de medida, estimada, ruidosa
-figure
+h3=figure;
+subplot(221)
 hold on
 grid
-plot(x3(1,:),x3(2,:),'LineWidth',3)
-plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
+plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(x3(1,:),x3(2,:),'--b','LineWidth',2)
 title('Estimación');
 if(EsMatlab == 1)
-    legend('Estimada','Medida','Ruidosa','location','SouthEast');
+    legend('Medida','Real','Estimada','location','SouthEast');
+    xlabel('Posición x');
+    ylabel('Posición y');
 else
-    legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+    legend(['Medida';'Real','Estimada'],'location','SouthEast');
+    xlabel('Posición $x$ [\si{\m}]');
+    ylabel('Posición $y$ [\si{\m}]');
 end
-xlabel=('Posición $x$ [\si{\m}]');
-ylabel=('Posición $y$ [\si{\m}]');
+
+% figure;
+subplot(222)
+plot(x'-x3');
+xlim([0 150]);
+title('Error de estimación');
+xlabel('Tiempo');
+legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
+
+covx_g3 = xcorr(g3(1,:)');
+covy_g3 = xcorr(g3(2,:)');
+
+% figure
+subplot(223)
+plot(covx_g3)
+grid
+title('Covarianza innovaciones x')
+axis tight;
+
+% figure
+subplot(224)
+plot(covy_g3)
+grid
+title('Covarianza innovaciones y')
+axis tight;
+
+h3.Position=[0 0 1200 700];
+h3.PaperUnits='points';
+h3.PaperSize=[1200 700];
+print('../Informe/Figuras/graf_ej3c','-dpdf','-bestfit');
 
 % Grafico de medida, estimada, ruidosa
-figure
+h4=figure;
+subplot(221)
 hold on
 grid
-plot(x4(1,:),x4(2,:),'LineWidth',3)
-plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(yk(:,1),yk(:,2),'color',myGreen)
+plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(x4(1,:),x4(2,:),'--b','LineWidth',2)
 title('Estimación');
 if(EsMatlab == 1)
-    legend('Estimada','Medida','Ruidosa','location','SouthEast');
+    legend('Medida','Real','Estimada','location','SouthEast');
+    xlabel('Posición x');
+    ylabel('Posición y');
 else
-    legend(['Estimada';'Medida';'Ruidosa'],'location','SouthEast');
+    legend(['Medida';'Real','Estimada'],'location','SouthEast');
+    xlabel('Posición $x$ [\si{\m}]');
+    ylabel('Posición $y$ [\si{\m}]');
 end
-xlabel=('Posición $x$ [\si{\m}]');
-ylabel=('Posición $y$ [\si{\m}]');
 
+% figure;
+subplot(222)
+plot(x'-x4');
+xlim([0 150]);
+title('Error de estimación');
+xlabel('Tiempo');
+legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
+
+covx_g4 = xcorr(g4(1,:)');
+covy_g4 = xcorr(g4(2,:)');
+
+% figure
+subplot(223)
+plot(covx_g4)
+grid
+title('Covarianza innovaciones x')
+axis tight;
+
+% figure
+subplot(224)
+plot(covy_g4)
+grid
+title('Covarianza innovaciones y')
+axis tight;
+
+h4.Position=[0 0 1200 700];
+h4.PaperUnits='points';
+h4.PaperSize=[1200 700];
+print('../Informe/Figuras/graf_ej3d','-dpdf','-bestfit');
 
 %%%%%%%%%% CÃ³mo grafico el error?!?! %%%%%%%%%%%%%%%%%%
