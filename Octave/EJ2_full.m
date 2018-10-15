@@ -203,11 +203,11 @@ end
 
 h.Position=[0 0 1200 700];
 if bool_p
-    print('../Informe/Figuras/graf_ej2a','-deps');
+    print('../Informe/Figuras/graf_ej2a','-dpdf');
 elseif bool_v
-    print('../Informe/Figuras/graf_ej2b','-deps');
+    print('../Informe/Figuras/graf_ej2b','-dpdf');
 elseif bool_a
-    print('../Informe/Figuras/graf_ej2c','-deps');
+    print('../Informe/Figuras/graf_ej2c','-dpdf');
 end
 
 % Gráfico de correlación de innovaciones (debe ser ruido blanco)
@@ -227,11 +227,11 @@ grid
 title('Covarianza innovaciones y')
 
 if bool_p
-    print('../Informe/Figuras/covinn_ej2a','-deps');
+    print('../Informe/Figuras/covinn_ej2a','-dpdf');
 elseif bool_v
-    print('../Informe/Figuras/covinn_ej2b','-deps');
+    print('../Informe/Figuras/covinn_ej2b','-dpdf');
 elseif bool_a
-    print('../Informe/Figuras/covinn_ej2c','-deps');
+    print('../Informe/Figuras/covinn_ej2c','-dpdf');
 end
 
 % Observabilidad
