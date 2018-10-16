@@ -22,18 +22,21 @@ cant_estados = tipos_variables * dim;
 %p_perdido_a = rand(1,dim)/2 + 0.5;  
 
 % Variables de configuración de la pérdida de datos
-p_perdido = 0.1;				% Se pierden 3 de 10 datos
-p_perdido = 1-p_perdido;
-p_perdido_p = [1 1].*p_perdido;
-p_perdido_v = [1 1].*p_perdido; 
-p_perdido_a = [1 1].*p_perdido;    
-p_bernoulli = [p_perdido_p, p_perdido_v, p_perdido_a];
-
+p_perdido = [0.1 0.9];				% Se pierden 3 de 10 datos
+for i=1:length(p_perdido)
+    p_perdidoaux(i) = 1-p_perdido(i);
+    p_perdido_p(i,:) = [1 1].*p_perdidoaux(i);
+    p_perdido_v(i,:) = [1 1].*p_perdidoaux(i);
+    p_perdido_a(i,:) = [1 1].*p_perdidoaux(i);
+    p_bernoulli(i,:) = [p_perdido_p(i,:), p_perdido_v(i,:), p_perdido_a(i,:)];
+end
 % Hay mediciones de:
 bool_p = 1;
-bool_v = 1;
+bool_v = 0;
 bool_a = 0;
 
+% Selección de impresión de imágenes
+bool_print = 1;
 
 %%%%%%%%%%%%%%
 %%% 1a Defina las variables de estado
@@ -102,100 +105,234 @@ yk = yk'; % Así tiene la forma de Pos
 R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
 
 
-%%% ALGORITMO %%%%
-x = x0;
-P = P0_0;
-xk1_k1 = x;
-Pk1_k1 = P;
-g = yk(1,:)';
+for l=1:length(p_perdido)
+    
+    %%% ALGORITMO %%%%
+    x = x0;
+    P = P0_0;
+    xk1_k1 = x;
+    Pk1_k1 = P;
+    g = yk(1,:)';
 
-for i=1:cant_mediciones-1
-	% Perdida de datos
-	perder_dato = binornd(1,p_bernoulli,[1,cant_estados]);
-	
-	C_aux = C;
-	C = C .* perder_dato;	% Funciona en Matlab 2017b y Octave. Se necesita 'broadcasting operation'
-	
-
-	% Predicción
-	xk_k1 = Ad * xk1_k1;
-	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
-	gk = [innovaciones(yk(i,:),C,xk_k1)];
-
-	% Corrección
-	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
-	xk_k = xk_k1 + Kk*(gk);
-	Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
-	
-	% Actualización
-	xk1_k1 = xk_k;
-	Pk1_k1 = Pk_k;
-	C = C_aux;
-
-
-	% Guardo
-	g = [g gk];
-	x = [x xk_k];
-	P = [P; Pk_k];
+    for i=1:cant_mediciones-1
+        % Perdida de datos
+        perder_dato = binornd(1,p_bernoulli(l,:),[1,cant_estados]);
+        
+        C_aux = C;
+        % 	C = C .* perder_dato;	% Funciona en Matlab 2017b y Octave. Se necesita 'broadcasting operation'
+        if EsMatlab
+            C=bsxfun(@times,C,perder_dato);
+        else
+            C = C .* perder_dato;
+        end
+        
+        % Predicción
+        xk_k1 = Ad * xk1_k1;
+        Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
+        gk = [innovaciones(yk(i,:),C,xk_k1)];
+        
+        % Corrección
+        Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
+        xk_k = xk_k1 + Kk*(gk);
+        Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
+        
+        % Actualización
+        xk1_k1 = xk_k;
+        Pk1_k1 = Pk_k;
+        C = C_aux;
+        
+        
+        % Guardo
+        g = [g gk];
+        x = [x xk_k];
+        P = [P; Pk_k];
+    end
+    
+    % Grafico de medida, estimada, ruidosa
+    h=figure;
+    subplot(2,2,1);
+    hold on
+    grid
+    if bool_p
+        plot(yk(:,1),yk(:,2),'color',myGreen)
+    end
+    plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+    plot(x(1,:),x(2,:),'--b','LineWidth',2)
+    title('Estimación de la trayectoria');
+    if(EsMatlab == 1)
+        if bool_p
+            legend('Medición','Real','Estimada','location','SouthEast');
+        else
+            legend('Real','Estimada','location','SouthEast');
+        end
+        xlabel('Posición x');
+        ylabel('Posición y');
+    else
+        if bool_p
+            legend(['Medición';'Real';'Estimada'],'location','SouthEast');
+        else
+            legend(['Real';'Estimada'],'location','SouthEast');
+        end
+        xlabel('Posición $x$ [\si{\m}]');
+        ylabel('Posición $y$ [\si{\m}]');
+    end
+    
+    % Grafico del estado posición en función del tiempo
+    %figure
+    subplot(2,2,2);
+    hold on
+    grid
+    plot(Pos(:,1),'LineWidth',2)
+    plot(Pos(:,2),'LineWidth',2)
+    plot(x(1,:),'--','LineWidth',2)
+    plot(x(2,:),'--','color',myGreen,'LineWidth',2)
+    ylabel('Posición');
+    xlabel('Tiempo');
+    title('Estados de posición');
+    legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+    
+    
+    % Grafico del estado velocidad en función del tiempo
+    % figure
+    subplot(2,2,3);
+    hold on
+    grid
+    if bool_v
+        plot(yk(:,1),'--');
+        plot(yk(:,2),'--');
+    end
+    plot(Vel(:,1),'LineWidth',2)
+    plot(Vel(:,2),'LineWidth',2)
+    plot(x(3,:),'--','LineWidth',2)
+    plot(x(4,:),'--','color',myGreen,'LineWidth',2)
+    ylabel('Velocidad');
+    xlabel('Tiempo');
+    title('Estados de velocidad');
+    if bool_v
+        legend('Medida x','Medida y','Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+    else
+        legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+    end
+    
+    
+    % Grafico del estado aceleración en función del tiempo
+    % figure
+    subplot(2,2,4);
+    hold on
+    grid
+    if bool_a
+        plot(yk(:,1),'--');
+        plot(yk(:,2),'--');
+    end
+    plot(Acel(:,1),'LineWidth',2)
+    plot(Acel(:,2),'LineWidth',2)
+    plot(x(5,:),'--','LineWidth',2)
+    plot(x(6,:),'--','color',myGreen,'LineWidth',2)
+    ylabel('Aceleración');
+    xlabel('Tiempo');
+    title('Estados de aceleración');
+    if bool_a
+        legend('Medida x','Medida y','Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+    else
+        legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+    end
+    
+    suptitle(sprintf('p_{pérdida}=%.2f',p_perdido(l)));
+    
+    h.Position=[0 0 1200 700];
+    h.PaperUnits='points';
+    h.PaperSize=[1200 700];
+    if bool_print
+        print(sprintf(['../Informe/Figuras/graf_ej7_' num2str(l)]),'-dpdf','-bestfit');
+    end
+    
+    % Gráfico de correlación de innovaciones (debe ser ruido blanco)
+    covx_g = xcorr(g(1,:)');
+    covy_g = xcorr(g(2,:)');
+    
+    h2=figure;
+    subplot(211)
+    plot(covx_g)
+    grid
+    title('Covarianza innovaciones x')
+    axis tight;
+    
+    % figure
+    subplot(212)
+    plot(covy_g)
+    grid
+    title('Covarianza innovaciones y')
+    axis tight;
+    
+    suptitle(sprintf('p_{pérdida}=%.2f',p_perdido(l)));
+    
+    h2.Position=[0 0 1200 700];
+    h2.PaperUnits='points';
+    h2.PaperSize=[1200 700];
+    if bool_print
+        print(sprintf(['../Informe/Figuras/covinn_ej7_' num2str(l)]),'-dpdf','-bestfit');
+    end
 end
 
+% % Grafico de medida, estimada, ruidosa
+% figure
+% hold on
+% grid
+% plot(x(1,:),x(2,:),'LineWidth',3)
+% plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+% plot(yk(:,1),yk(:,2),'color',myGreen)
+% title('Estimación');
+% if(EsMatlab == 1)
+%     legend('Estimada','Medida','Ruidosa');
+% else
+%     legend(['Estimada';'Medida';'Ruidosa']);
+% end
+% xlabel = 'Tiempo [s]';
+% ylabel = 'Posición [m]';
+% 
+% % Grafico del estado posición en función del tiempo
+% figure
+% hold on
+% grid
+% plot(x(1,:),'LineWidth',2)
+% plot(x(2,:),'color',myGreen,'LineWidth',2)
+% title('Estados de posición');
+% 
+% 
+% % Grafico del estado velocidad en función del tiempo
+% figure
+% hold on
+% grid
+% plot(x(3,:),'LineWidth',2)
+% plot(x(4,:),'color',myGreen,'LineWidth',2)
+% title('Estados de velocidad');
+% 
+% 
+% % Grafico del estado aceleración en función del tiempo
+% figure
+% hold on
+% grid
+% plot(x(5,:),'LineWidth',2)
+% plot(x(6,:),'color',myGreen,'LineWidth',2)
+% title('Estados de aceleraciÃ³n');
+% 
+% 
+% % Gráfico de correlación de innovaciones (debe ser ruido blanco)
+% covx_g = xcorr(g(1,:)');
+% covy_g = xcorr(g(2,:)');
+% 
+% figure
+% plot(covx_g)
+% grid
+% title('Covarianza innovaciones x')
+% 
+% figure
+% plot(covy_g)
+% grid
+% title('Covarianza innovaciones y')
 
-% Grafico de medida, estimada, ruidosa
-figure
-hold on
-grid
-plot(x(1,:),x(2,:),'LineWidth',3)
-plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
-plot(yk(:,1),yk(:,2),'color',myGreen)
-title('Estimación');
-if(EsMatlab == 1)
-    legend('Estimada','Medida','Ruidosa');
-else
-    legend(['Estimada';'Medida';'Ruidosa']);
-end
-xlabel = 'Tiempo [s]';
-ylabel = 'Posición [m]';
-
-% Grafico del estado posición en función del tiempo
-figure
-hold on
-grid
-plot(x(1,:),'LineWidth',2)
-plot(x(2,:),'color',myGreen,'LineWidth',2)
-title('Estados de posición');
 
 
-% Grafico del estado velocidad en función del tiempo
-figure
-hold on
-grid
-plot(x(3,:),'LineWidth',2)
-plot(x(4,:),'color',myGreen,'LineWidth',2)
-title('Estados de velocidad');
-
-
-% Grafico del estado aceleración en función del tiempo
-figure
-hold on
-grid
-plot(x(5,:),'LineWidth',2)
-plot(x(6,:),'color',myGreen,'LineWidth',2)
-title('Estados de aceleraciÃ³n');
-
-
-% Gráfico de correlación de innovaciones (debe ser ruido blanco)
-covx_g = xcorr(g(1,:)');
-covy_g = xcorr(g(2,:)');
-
-figure
-plot(covx_g)
-grid
-title('Covarianza innovaciones x')
-
-figure
-plot(covy_g)
-grid
-title('Covarianza innovaciones y')
 
 % Observabilidad
 Obs = obsv(Ad,C);
