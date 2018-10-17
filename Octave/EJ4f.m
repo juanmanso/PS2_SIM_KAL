@@ -76,9 +76,9 @@ P0_0 = diag([cov_p, cov_v, cov_a]);
 
 %% a)
 %%%%% y_k = [I 0 0] [pk vk ak]' + ruido \eta
-sigma_etap = 60;
-sigma_etav = 2;
-sigma_etaa = 0.1;
+sigma_etap = 100;
+sigma_etav = 10;
+sigma_etaa = 1;
 
 %%% Para hacer AWGN, randn(fila,col)*sigma_etap
 
