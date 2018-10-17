@@ -21,4 +21,25 @@
 		K = P C^{*} (R + C P C^{*})^{-1}
 	\end{equation*}
 	
-	Dadas estas matrices, surge la posibilidad de implementar una modificación al algoritmo de Kalman, para que en lugar de utilizar las matrices calculadas instante a instante, siempre utilice las matrices a las que va a converger, suponiendo por supuesto que el sistema es invariante en el tiempo. Dicho algoritmo tiene la ventaja de que posee menos procesamiento en tiempo real, dado a que las matrices $K$ y $P$ pueden computarse en tiempo de compilación y guardarse fijas en la memoria. Dicho algoritmo no será óptimo, pero puede demostrarse que la versión modificada convergerá a la versión original con rapidez exponencial, siendo más los beneficios que trae, que los inconvenientes. El objetivo de este punto es comparar las dos variantes y demostrar esto.
+	Dadas estas matrices, surge la posibilidad de implementar una modificación al algoritmo de Kalman, para que en lugar de utilizar las matrices calculadas instante a instante, siempre utilice las matrices a las que va a converger, suponiendo por supuesto que el sistema es invariante en el tiempo. Dicho algoritmo tiene la ventaja de que posee menos procesamiento en tiempo real, dado a que las matrices $K$ y $P$ pueden computarse en tiempo de compilación y guardarse fijas en la memoria. Dicho algoritmo no será óptimo, pero puede demostrarse que la versión modificada convergerá a la versión original con rapidez exponencial, siendo más los beneficios que trae, que los inconvenientes. El objetivo de este punto es comparar las dos variantes y demostrar esto. En la figura \ref{fig:ej3f_cov} podemos ver el resultado de la estimación. En linea punteada azul puede verse la estimación del algoritmo modificado. Puede verse que comienza desviado de la trayectoria, pero rapidamente converge a la misma. 
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/graf_ej5.pdf}
+		\caption{Estimación de Trayectoria}
+		\label{fig:ej6_cov}
+	\end{figure}
+	
+	%Esta otra figura no se a que corresponde.
+	%\begin{figure}[H]
+	%	\centering
+	%	\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/covinn_ej5.pdf}
+	%	\caption{Correlación De Innovaciones}
+	%	\label{fig:ej6_cov}
+	%\end{figure}
+	
+	\subsection{Script}
+
+	A continuación incluimos el script que realiza la estimación.
+	
+	%\lstinputlisting[]{../Octave/EJ5.m}
