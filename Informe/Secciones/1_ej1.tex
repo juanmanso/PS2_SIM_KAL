@@ -1,4 +1,4 @@
-\subsection{Inciso (a}
+\subsection{Inciso a}
 	Se define la variable de estado asociada a las ecuaciones de movimiento continuo como:
 		\begin{equation*}
 			\vect{x}(t) = \begin{bmatrix} \vect{p}(t) \\[0.3em] \vect{v}(t) \\[0.3em] \vect{a}(t) \end{bmatrix} \qquad%
@@ -13,7 +13,7 @@
 				\vect{y}(t) = C\: \vect{x}(t) + \vect{\eta}(t)
 			\end{cases}
 		\end{equation*}
-	donde $\vect{\xi}(t)$ es el ruido de proceso y $\vect{\eta}(t)$ el ruido de medición. La matriz $A$ contiene la información de la dinámica del sistema, la matriz $B$ es la matriz de entrada del ruido de proceso, y la matriz $C$ es la matriz de salida, que conecta los estados con las mediciones. En la figura \ref{fig:bloques} puede verse el diagrama en bloques del modelo.
+	donde $\vect{\xi}(t)$ es el ruido de proceso y $\vect{\eta}(t)$ el ruido de medición. La matriz $A$ contiene la información de la dinámica del sistema, $B$ es la matriz de entrada del ruido de proceso, y la matriz de salida es $C$, que conecta los estados con las mediciones. En la figura \ref{fig:bloques} puede verse el diagrama en bloques del modelo.
 	\graficarEPS{0.6}{bloques}{Diagrama en bloques del modelo.}{fig:bloques}
 	
 	Para poder tratar el sistema en forma digital, es necesario definir un período de muestreo $T$, que en nuestro caso es igual a la unidad. De esta forma el modelo en tiempo discreto es el siguiente:
@@ -26,24 +26,27 @@
 			\end{cases}
 		\end{equation*}
 		
-	Donde ahora tenemos nuevas matrices para el caso discreto. En nuestro caso, de las ecuaciones de la cinemática se deduce que la matriz de la dinamica del sistema es:
+	donde ahora se obtienen nuevas matrices para el caso discreto. En dicho caso, a partir de las ecuaciones de la cinemática, se deduce que la matriz de la dinámica del sistema es:
 
 		\begin{equation*}
 			A_{d} = \begin{bmatrix} I & IT & I\frac{T^2}{2} \\[0.3em] 0 & I & IT \\[0.3em] 0 & 0 & I \end{bmatrix}
 		\end{equation*}
 
-	La matriz de salida $C_{d}$ dependerá de lo que se este midiendo. Por ejemplo para el caso en que midamos todas las variables será:
+	La matriz de salida $C_{d}$ dependerá de lo que se esté midiendo. Por ejemplo para el caso en que se sensen todas las variables será:
 	
 		\begin{equation*}
 			C_{d} = \begin{bmatrix} I & 0 & 0 \\[0.3em] 0 & I & 0 \\[0.3em] 0 & 0 & I \end{bmatrix}
 		\end{equation*}
 		
-	Para el caso en que alguna de las variables no se esté midiendo, será necesario eliminar alguna de las tres filas de la matriz. La primera, segunda o tercera, dependiendo de posicion, velocidad y aceleración respectivamente. La matriz B la tomaremos como la identidad en nuestro modelo.
-	En cuanto a los ruidos, supondremos que se trata de ruidos blancos de matrices de covarianza $Q_{d}$ para el ruido de proceso y $R_{d}$ para el ruido de medición. Cabe aclarar que el hecho de que se trate de ruidos blancos no implica que $Q_{d}$ y $R_{d}$ sean diagonales. Ambas matrices dan informacion de la correlacion componente a componente de los vectores de ruido.
+		Para el caso en que alguna de las variables no se esté midiendo, será necesario eliminar alguna de las tres filas de la matriz. 
+		\Juan{Yo sacaría esta oración}
+		La primera, segunda o tercera, dependiendo de posicion, velocidad y aceleración respectivamente. 
+		En este modeo, la matriz $B$ se toma como la matriz identidad.
+	En cuanto a los ruidos, se hace la suposición que se tratan de ruidos blancos con matrices de covarianza $Q_{d}$ para el ruido de proceso y $R_{d}$ para el ruido de medición. Cabe aclarar que el hecho de que se trate de ruidos blancos no implica que $Q_{d}$ y $R_{d}$ sean diagonales. Ambas matrices dan información de la correlación componente a componente de los vectores de ruido.
 	
-\subsection{Inciso (b}
+\subsection{Inciso b}
 
-	El siguiente bloque de código contiene la definición de las matrices $A_{d}$ y $Q_{d}$ que utilizaremos.
+	El siguiente bloque de código contiene la definición de las matrices $A_{d}$ y $Q_{d}$.
 
 	\begin{lstlisting}
 	
@@ -67,13 +70,12 @@ var_xiv = 2e-3;
 var_xia = 1e-2;
 
 %%%
-T = Tiempo(2:end)-Tiempo(1:end-1);	
 T = 1;					% Suponiendo equiespaciado
 
 % Variable de estado X = [P;V;A]
 I = eye(dim);
-Ad =[I		I.*T	(T.^2)/2.*I;
-     I*0	I	T.*I;
+Ad =[I		I*T	(T^2)/2*I;
+     I*0	I	T*I;
      I*0	I*0	I;];
 
 % Covarianza del ruido de proceso

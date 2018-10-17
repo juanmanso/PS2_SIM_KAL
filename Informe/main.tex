@@ -22,16 +22,16 @@
 \definecolor{myred}{rgb}{0.5,0,0}
 \definecolor{mygreen}{rgb}{0,0.5,0}
 
-
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
 
 \begin{document}
 		% Carátula (formal o simple,_formal o _simple respectivamente) con Resumen
 		% incluido e Índice (si es necesario configurar en config.tex) del informe
-		\input{cover_simple.tex}
+		\input{cover_formal.tex}
 	\setcounter{page}{1}
 
 	%\part{Enunciado}\label{sec:enunciado}
-	\section{Enunciado}
+\begin{center}{\Large{\textbf{Enunciado}}}\end{center}
 		\input{0_enunciado.tex}
 
 	\section{Ejercicio 1 \\ Modelo En Variables De Estado}\label{sec:ej1}

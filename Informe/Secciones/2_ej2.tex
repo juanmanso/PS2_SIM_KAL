@@ -1,43 +1,41 @@
 
-	El algoritmo de Kalman se basa en poder estimar el vector de estados a partir de la dinámica del sistema y las mediciones. Para la definición del algoritmo utilizaremos la siguiente notación. Llamaremos:
+	El algoritmo de Kalman se basa en poder estimar el vector de estados a partir de la dinámica del sistema y las mediciones. Para la definición del algoritmo se utilizará la siguiente notación. Se llamará:
 	
 	\begin{equation*}
 		\vect{x_{k/k - 1}}
 	\end{equation*}
-	
-	A la mejor estimación de el vector de estados utilizando información hasta el instante $k - 1$. Es decir se trata de una predicción. Llamaremos a la matriz de covarianza del error de dicha estimacion:
+	a la mejor estimación del vector de estados utilizando información hasta el instante $k - 1$. Es decir se trata de una predicción. Se llamará a la matriz de covarianza del error de dicha estimacion:
 	
 	\begin{equation*}
 		\vect{P_{k/k - 1}}
 	\end{equation*}
 	
-	Por otro lado llamaremos a:
+	Por otro lado se llamará a:
 	
 	\begin{equation*}
 		\vect{x_{k/k}}
 	\end{equation*}
-	
-	A la mejor estimación del vector de estados utilizando información hasta el instante $k$. Dicha estimación será el resultado final del algoritmo y la matriz de covarianza del error del mismo será:
+	a la mejor estimación del vector de estados utilizando información hasta el instante $k$. Dicha estimación será el resultado final del algoritmo y la matriz de covarianza del error del mismo será:
 	
 	\begin{equation*}
 		\vect{P_{k/k - 1}}
 	\end{equation*}
 
-	Cabe aclarar que cuando decimos mejor estimador, hacemos referencia a que se trata del que minimiza el error cuadrático medio. Dicho todo esto, presentamos el algoritmo de Kalman para poder realizar la estimación de la trayectoria.
+	Cabe aclarar que cuando se habla del mejor estimador, se referiere a aquel que minimiza el error cuadrático medio.\\
 	
 		\subsection{Algoritmo de Kalman}
 			\paragraph{Inicialización}
-				Es la etapa en la que definimos el estado inicial de la estimación, para poder inicializar el algoritmo necesitamos una estadistica del estado inicial del sistema:
+				Es la etapa en la cual se define el estado inicial de la estimación. Para poder inicializar el algoritmo se necesita una estadistica del estado inicial del sistema:
 				
 				\begin{equation*}
 					\vect{x_{0/0}} \leftarrow E\left[\vect{x_{0}}\right]
 				\end{equation*}
 				
 				\begin{equation*}
-					P_{0/0} \leftarrow COV\left[\vect{x_{0}}\right]
+					P_{0/0} \leftarrow \text{cov}\left[\vect{x_{0}}\right]
 				\end{equation*}
 			\paragraph{Predicción}
-				Es la etapa en la que realizarmos una predicción del futuro estado del sistema utilizando el modelo en el espacio de estados:
+				Es la etapa en la cual se realiza una predicción del futuro estado del sistema utilizando el modelo en el espacio de estados:
 				
 				\begin{equation*}
 					\vect{x_{k/k - 1}} \leftarrow Ad_{k - 1} \vect{x_{k - 1/k - 1}}
@@ -47,13 +45,13 @@
 					P_{k/k - 1} \leftarrow Ad_{k - 1} P_{k - 1 / k - 1} Ad_{k - 1}^{*} + Bd_{k - 1} Q_{k - 1} Bd_{k - 1}^{*}
 				\end{equation*}
 			\paragraph{Corrección}
-				Es la etapa en la que corregimos la predicción con el valor de la medición, para ello necesitamos calcular la matriz de ganancia de Kalman $K_{k}$:
+				Es la etapa en la cual se correge la predicción con el valor de la medición. Para ello se necesita calcular la matriz de ganancia de Kalman $K_{k}$:
 				
 				\begin{equation*}
 					K_{k} \leftarrow P_{k / k - 1} Cd_{k}^{*} (Cd_{k} P_{k/k - 1} Cd_{k}^{*} + R_{k})^{-1}
 				\end{equation*}
 				
-				Luego corregimos:
+				Luego se correge:
 				
 				\begin{equation*}
 					\vect{x_{k/k}} \leftarrow \vect{x_{k/k - 1}} + K_{k} (y_{k} - Cd_{k} \vect{x_{k/k - 1}})
@@ -64,7 +62,7 @@
 				\end{equation*}
 					
 			\paragraph{Actualización}
-				Es la etapa del algoritmo que pasamos al siguiente instante k.
+				Es la etapa del algoritmo en la que se pasa al siguiente instante $k$.
 				
 				\begin{equation*}
 					\vect{x_{k - 1/k - 1}} \leftarrow \vect{x_{k/k}}
@@ -74,9 +72,10 @@
 					P_{k - 1/k - 1} \leftarrow P_{k/k}
 				\end{equation*}
 
+
 	\subsection{Resultados}
 		\subsubsection{Medición De Posición}
-			En la figura \ref{fig:ej2a} observamos los resultados de la estimación basada en mediciones de posición. Puede verse que la estimación se desvía menos del valor real que las mediciones.
+			En la figura \ref{fig:ej2a} se observan los resultados de la estimación basada en mediciones de posición. Puede verse que la estimación se desvía menos del valor real que las mediciones.
 
 		\begin{figure}[H]
 			\centering
@@ -109,9 +108,7 @@
 		
 		\begin{figure}[H]
 			\centering
-			\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/covinn_ej2b.pdf}
-			\caption{Caso: Medición De Velocidad - Innovaciones}
-			\label{fig:ej2b_innov}
+			\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/covinn_ej2b.pdf} \caption{Caso: Medición De Velocidad - Innovaciones} \label{fig:ej2b_innov}
 		\end{figure}
 			
 		\subsubsection{Medición De Aceleración}
@@ -134,8 +131,29 @@
 			\label{fig:ej2c_innov}
 		\end{figure}
 
-	\subsection{Script}
-	
-		A continuación presentamos el script de MATLAB que implementa el algoritmo. Se puede seleccionar si se esta midiendo posicion, velocidad o aceleracion, estableciendo las variables bool\_p, bool\_v o bool\_a en 1 o en 0 para indicar que se esta midiendo.
-	
-	%\lstinputlisting[]{../Octave/EJ2_full.m}
+	\subsection{Test De Observabilidad}
+		Para determinar cuántos estados no observables tiene el sistema se debe analizar el rango de la \Juan{Si hay ganas y se acuerda alguno, podríamos explicar esto.. for extra points}
+		matriz de observabilidad. A continuación se expone la porción de código que se encarga de ello:
+		\lstinputlisting[firstline=243, firstnumber=243]{EJ2_full.m}
+
+		Para los incisios del ejercicio \ref{sec:ej2} se obtiene la siguiente tabla.
+		\begin{table}[h!]
+			\centering
+			\begin{tabular}{ccc}
+				\toprule
+				Medición	& Cantidad no observables	& Observables\\
+				\midrule
+				$\vect{p}$	& 0				& $\vect{p}$ $\vect{v}$ $\vect{a}$\\
+				$\vect{v}$	& 2				& $\vect{p}$ $\vect{v}$ \\
+				$\vect{a}$	& 4				& $\vect{p}$\\
+
+				\bottomrule
+			\end{tabular}
+				\caption{Test de observabilidad para el ejercicio 2.}
+				\label{tab:obs_ej2}
+		\end{table}
+%	\subsection{Script}
+%	
+%		A continuación presentamos el script de MATLAB que implementa el algoritmo. Se puede seleccionar si se esta midiendo posicion, velocidad o aceleracion, estableciendo las variables bool\_p, bool\_v o bool\_a en 1 o en 0 para indicar que se esta midiendo.
+%	
+%	%\lstinputlisting[]{../Octave/EJ2_full.m}
