@@ -19,7 +19,7 @@ bool_p = 1;
 bool_v = 1;
 bool_a = 1;
 
-bool_print = 1; % Flag para exportar imagen
+bool_print = 0; % Flag para exportar imagen
 
 %%%%%%%%%%%%%%
 %%% 1a Defina las variables de estado
@@ -97,13 +97,13 @@ g = yk(1,:)';
 for i=1:cant_mediciones-1
 	% Predicción
 	xk_k1 = Ad * xk1_k1;
-	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
+% 	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
 	gk = [innovaciones(yk(i,:),C,xk_k1)];
 
 	% Corrección
 % 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
 	xk_k = xk_k1 + K_dare*(gk);
-	Pk_k = (eye(cant_estados) - K_dare*C) * Pk_k1;
+% 	Pk_k = (eye(cant_estados) - K_dare*C) * Pk_k1;
 	
 	% Actualización
 	xk1_k1 = xk_k;
@@ -113,7 +113,7 @@ for i=1:cant_mediciones-1
 	% Guardo
 	g = [g gk];
 	x = [x xk_k];
-	P = [P; Pk_k];
+% 	P = [P; Pk_k];
 end
 
 % Grafico de medida, estimada, ruidosa
@@ -159,6 +159,8 @@ plot(Vel(:,1),'LineWidth',2)
 plot(Vel(:,2),'LineWidth',2)
 plot(x(3,:),'--','LineWidth',2)
 plot(x(4,:),'--','color',myGreen,'LineWidth',2)
+plot(yk(:,3));
+plot(yk(:,4));
 ylabel('Velocidad');
 xlabel('Tiempo');
 title('Estados de velocidad');
@@ -174,6 +176,8 @@ plot(Acel(:,1),'LineWidth',2)
 plot(Acel(:,2),'LineWidth',2)
 plot(x(5,:),'--','LineWidth',2)
 plot(x(6,:),'--','color',myGreen,'LineWidth',2)
+plot(yk(:,5));
+plot(yk(:,6));
 ylabel('Aceleración');
 xlabel('Tiempo');
 title('Estados de aceleración');
