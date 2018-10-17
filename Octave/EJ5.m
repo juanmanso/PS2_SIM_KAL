@@ -19,6 +19,8 @@ bool_p = 1;
 bool_v = 1;
 bool_a = 1;
 
+bool_print = 1; % Flag para exportar imagen
+
 %%%%%%%%%%%%%%
 %%% 1a Defina las variables de estado
 %%%%%%%%%%%%%%%
@@ -84,3 +86,127 @@ R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1
 %%% Función DARE %%%
 
 [P_dare, Polos_Lazo_Cerrado, K_dare] = dare(Ad,Bk1,Qd,R);
+
+%%% ALGORITMO %%%%
+x = x0;
+P = P_dare;
+xk1_k1 = x;
+Pk1_k1 = P;
+g = yk(1,:)';
+
+for i=1:cant_mediciones-1
+	% Predicción
+	xk_k1 = Ad * xk1_k1;
+	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
+	gk = [innovaciones(yk(i,:),C,xk_k1)];
+
+	% Corrección
+% 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
+	xk_k = xk_k1 + K_dare*(gk);
+	Pk_k = (eye(cant_estados) - K_dare*C) * Pk_k1;
+	
+	% Actualización
+	xk1_k1 = xk_k;
+% 	Pk1_k1 = Pk_k;
+
+
+	% Guardo
+	g = [g gk];
+	x = [x xk_k];
+	P = [P; Pk_k];
+end
+
+% Grafico de medida, estimada, ruidosa
+h=figure;
+subplot(2,2,1);
+hold on
+grid
+plot(yk(:,1),yk(:,2),'color',myGreen)
+plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(x(1,:),x(2,:),'--b','LineWidth',2)
+title('Estimación de la trayectoria');
+if(EsMatlab == 1)
+    legend('Medición','Real','Estimada','location','SouthEast');
+    xlabel('Posición x');
+    ylabel('Posición y');
+else
+    legend(['Medición';'Real';'Estimada'],'location','SouthEast');
+    xlabel('Posición $x$ [\si{\m}]');
+    ylabel('Posición $y$ [\si{\m}]');
+end
+
+% Grafico del estado posición en función del tiempo
+%figure
+subplot(2,2,2);
+hold on
+grid
+plot(Pos(:,1),'LineWidth',2)
+plot(Pos(:,2),'LineWidth',2)
+plot(x(1,:),'--','LineWidth',2)
+plot(x(2,:),'--','color',myGreen,'LineWidth',2)
+ylabel('Posición');
+xlabel('Tiempo');
+title('Estados de posición');
+legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+
+
+% Grafico del estado velocidad en función del tiempo
+% figure
+subplot(2,2,3);
+hold on
+grid
+plot(Vel(:,1),'LineWidth',2)
+plot(Vel(:,2),'LineWidth',2)
+plot(x(3,:),'--','LineWidth',2)
+plot(x(4,:),'--','color',myGreen,'LineWidth',2)
+ylabel('Velocidad');
+xlabel('Tiempo');
+title('Estados de velocidad');
+legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+
+
+% Grafico del estado aceleración en función del tiempo
+% figure
+subplot(2,2,4);
+hold on
+grid
+plot(Acel(:,1),'LineWidth',2)
+plot(Acel(:,2),'LineWidth',2)
+plot(x(5,:),'--','LineWidth',2)
+plot(x(6,:),'--','color',myGreen,'LineWidth',2)
+ylabel('Aceleración');
+xlabel('Tiempo');
+title('Estados de aceleración');
+legend('Real x','Real y','Estimada x','Estimada y','location','SouthEast');
+
+h.Position=[0 0 1200 700];
+h.PaperUnits='points';
+h.PaperSize=[1200 700];
+if bool_print
+    print('../Informe/Figuras/graf_ej5','-dpdf','-bestfit');
+end
+
+% Gráfico de correlación de innovaciones (debe ser ruido blanco)
+covx_g = xcorr(g(1,:)');
+covy_g = xcorr(g(2,:)');
+
+h2=figure;
+subplot(211)
+plot(covx_g)
+grid
+title('Covarianza innovaciones x')
+axis tight;
+
+% figure
+subplot(212)
+plot(covy_g)
+grid
+title('Covarianza innovaciones y')
+axis tight;
+
+h2.Position=[0 0 1200 700];
+h2.PaperUnits='points';
+h2.PaperSize=[1200 700];
+if bool_print
+    print('../Informe/Figuras/covinn_ej5','-dpdf','-bestfit');
+end
