@@ -1,0 +1,24 @@
+
+	Es importante recalcar, que la ganancia de Kalman $K_k$ es distinta para cada instante $k$. Cuando el sistema es variante en el tiempo, el filtro se adapta a las condiciones de dinámica y ruido instante a instante. Por otro lado cuando el sistema es invariante en el tiempo, puede demostrarse que tanto la matriz $K_k$, como la matriz $P_k$, convergen para tiempo infinito. Es decir:
+	
+	\begin{equation*}
+		K_k \longrightarrow K
+	\end{equation*}
+	
+	\begin{equation*}
+		P_k \longrightarrow P
+	\end{equation*}
+	
+	para $k \rightarrow \infty$. Dichas matrices pueden computarse mediante ecuaciones aritméticas discretas de Riccati (DARE). Es decir, $P$ debe cumplir:
+	
+	\begin{equation*}
+		P = A P A^{*} - A P C^{*} (R + C P C^{*})^{-1} C P A + B Q B^{*}
+	\end{equation*}
+	
+	Por otro lado la ganancia de Kalman puede calcularse:
+	
+	\begin{equation*}
+		K = P C^{*} (R + C P C^{*})^{-1}
+	\end{equation*}
+	
+	Dadas estas matrices, surge la posibilidad de implementar una modificación al algoritmo de Kalman, para que en lugar de utilizar las matrices calculadas instante a instante, siempre utilice las matrices a las que va a converger, suponiendo por supuesto que el sistema es invariante en el tiempo. Dicho algoritmo tiene la ventaja de que posee menos procesamiento en tiempo real, dado a que las matrices $K$ y $P$ pueden computarse en tiempo de compilación y guardarse fijas en la memoria. Dicho algoritmo no será óptimo, pero puede demostrarse que la versión modificada convergerá a la versión original con rapidez exponencial, siendo más los beneficios que trae, que los inconvenientes. El objetivo de este punto es comparar las dos variantes y demostrar esto.
