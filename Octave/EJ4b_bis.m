@@ -18,20 +18,20 @@ cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
 % Selección de medición (se pueden múltiples opciones)
-bool_p = 0;
-bool_v = 0;
+bool_p = 1;
+bool_v = 1;
 bool_a = 1;
 
 % Selección de sesgo (sólo 1)
-bool_pb = 0;
+bool_pb = 1;
 bool_vb = 0;
-bool_ab = 1;
+bool_ab = 0;
 
 % Selección de impresión de imágenes
-bool_print = 1;
+bool_print = 0;
 
 % Supongo que desconozco un sesgo a la vez
-b0_p = [300 200]';
+b0_p = [0 0]';
 b0_v = [10 20]';
 b0_a = [2 1]';
 var_xib = 0;
@@ -76,24 +76,24 @@ P0_0 = diag([cov_p, cov_v, cov_a]);
 
 %% a)
 %%%%% y_k = [I 0 0] [pk vk ak]' + ruido \eta
-sigma_etap = 100;
-sigma_etav = 10;
-sigma_etaa = 1;
+sigma_etap = 60;
+sigma_etav = 2;
+sigma_etaa = 0.1;
 
 %%% Para hacer AWGN, randn(fila,col)*sigma_etap
 
 Bk1 = eye(cant_estados);
 
 % Con esta estructura las matrices tienen dimensiones dinÃ¡micas
-C =	[eye(dim*bool_p) zeros(dim*bool_p) zeros(dim*bool_p);
-	 zeros(dim*bool_v) eye(dim*bool_v) zeros(dim*bool_v);
-	 zeros(dim*bool_a) zeros(dim*bool_a) eye(dim*bool_a)];
+C =	[eye(2) zeros(2) zeros(2);
+	 zeros(2) eye(2) zeros(2);
+	 zeros(2) zeros(2) eye(2)];
 
 % A partir de qué medición entra, se le agrega el ruido correspondiente a ella.
-M_eta = [randn(dim,cant_mediciones)*sigma_etap*bool_p+repmat(b0_p,1,cant_mediciones)*bool_pb; randn(dim,cant_mediciones)*sigma_etav*bool_v+repmat(b0_v,1,cant_mediciones)*bool_vb; randn(dim,cant_mediciones)*sigma_etaa*bool_a+repmat(b0_a,1,cant_mediciones)*bool_ab];
+M_eta = [randn(dim,cant_mediciones)*sigma_etap+repmat(b0_p,1,cant_mediciones)*bool_pb; zeros(dim,cant_mediciones); zeros(dim,cant_mediciones)];
 
 
-yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + (C*M_eta);
+yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + (M_eta);
 yk = yk'; % Así tiene la forma de Pos
 
 R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
@@ -132,23 +132,24 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 b0 = b0_p*bool_pb + b0_v*bool_vb + b0_a*bool_ab;
-% cov_b = cov_p*bool_pb + cov_v*bool_vb + cov_a*bool_ab;
-cov_b=[200^2 200^2];
+cov_b = cov_p*bool_pb + cov_v*bool_vb + cov_a*bool_ab;
 
 % Redefino A y C suponiendo var de estado z = [x; b]
 Ad_b = [Ad zeros(cant_estados,dim); zeros(dim,cant_estados) eye(dim)];
 B_b = diag([ones(1,dim), ones(1,dim), ones(1,dim), zeros(1,dim)]);	% Zeros porque la dinámica del sesgo es cte
 Qd_b = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv, ones(1,dim)*var_xia, ones(1,dim)*var_xib]); 
-C_b = [C [eye(dim*bool_p)*bool_pb; eye(dim*bool_v)*bool_vb; eye(dim*bool_a)*bool_ab]]; % Concateno columnas de 0's excepto identidad en donde corresponda
+C_b = [C [eye(dim); zeros(dim); zeros(dim)]]; % Concateno columnas de 0's excepto identidad en donde corresponda
 R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
 
 tipos_variables = 4;
 cant_estados = tipos_variables * dim;
 
 % Problema con el eta
-Sesgo = zeros(cant_mediciones,dim);
+Sesgo = bsxfun(@times,ones(cant_mediciones,dim),b0');
+% Sesgo = zeros(cant_mediciones,dim);
 
-yk = C_b * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim) Sesgo])' + C_b * [(M_eta); zeros(dim,cant_mediciones)];
+% yk = C_b * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim) Sesgo])' + M_eta;
+yk = C * ([Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)])' + M_eta;
 yk = yk';
 
 % ALGORITMO
@@ -188,13 +189,14 @@ hold on
 grid
 plot(yk(:,1),yk(:,2))
 plot(x(1,:),x(2,:),'m','LineWidth',2)
+% plot(xb(1,:)+xb(7,:),xb(2,:)+xb(8,:),'LineWidth',2, 'color', myGreen)
+plot(xb(1,:),xb(2,:),'LineWidth',2, 'color', myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
-plot(xb(1,:),xb(2,:),'--b','LineWidth',2)
 title('Estimacion');
 if(EsMatlab == 1)
-    legend('Medido','Estimación sin estimar sesgo','Estado','Estimada estimando sesgo','location','SouthEast');
+    legend('Medido','Estimación sin estimar sesgo', 'Estimada estimando sesgo','Estado','location','SouthEast');
 else 
-    legend(['Medido';'Estimación sin estimar sesgo';'Estado';'Estimada estimando sesgo'],'location','SouthEast');
+    legend(['Medido';'Estimación sin estimar sesgo'; 'Estimada estimando sesgo';'Estado'],'location','SouthEast');
 end
 xlabel = 'Tiempo [s]';
 ylabel = 'Posición [m]';
@@ -260,7 +262,7 @@ h1.Position=[0 0 1200 700];
 h1.PaperUnits='points';
 h1.PaperSize=[1200 700];
 if bool_print
-    print('../Informe/Figuras/graf_ej4e','-dpdf','-bestfit');
+    print('../Informe/Figuras/graf_ej4d','-dpdf','-bestfit');
 end
 
 % Grafico de estimación de sesgo
@@ -282,7 +284,7 @@ wsize=[h2.Position(3) h2.Position(4)];
 h2.PaperUnits='points';
 h2.PaperSize=wsize;
 if bool_print
-    print('../Informe/Figuras/bias_ej4e','-dpdf','-bestfit');
+    print('../Informe/Figuras/bias_ej4d','-dpdf','-bestfit');
 end
 
 
@@ -308,10 +310,11 @@ wsize=[h3.Position(3) h3.Position(4)];
 h3.PaperUnits='points';
 h3.PaperSize=wsize;
 if bool_print
-    print('../Informe/Figuras/covinn_ej4e','-dpdf','-bestfit');
+    print('../Informe/Figuras/covinn_ej4d','-dpdf','-bestfit');
 end
 
+
 % Observabilidad
-Obs = obsv(Ad_b,C_b);
+Obs = obsv(Ad,C);
 rango_obs = rank(Obs);
 estados_no_observables = (cant_estados) - rango_obs

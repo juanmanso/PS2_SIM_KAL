@@ -159,8 +159,8 @@ plot(Vel(:,1),'LineWidth',2)
 plot(Vel(:,2),'LineWidth',2)
 plot(x(3,:),'--','LineWidth',2)
 plot(x(4,:),'--','color',myGreen,'LineWidth',2)
-plot(yk(:,3));
-plot(yk(:,4));
+% plot(yk(:,3));
+% plot(yk(:,4));
 ylabel('Velocidad');
 xlabel('Tiempo');
 title('Estados de velocidad');
@@ -176,8 +176,8 @@ plot(Acel(:,1),'LineWidth',2)
 plot(Acel(:,2),'LineWidth',2)
 plot(x(5,:),'--','LineWidth',2)
 plot(x(6,:),'--','color',myGreen,'LineWidth',2)
-plot(yk(:,5));
-plot(yk(:,6));
+% plot(yk(:,5));
+% plot(yk(:,6));
 ylabel('Aceleración');
 xlabel('Tiempo');
 title('Estados de aceleración');

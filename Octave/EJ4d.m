@@ -132,7 +132,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 b0 = b0_p*bool_pb + b0_v*bool_vb + b0_a*bool_ab;
-cov_b = cov_p*bool_pb + cov_v*bool_vb + cov_a*bool_ab;
+% cov_b = cov_p*bool_pb + cov_v*bool_vb + cov_a*bool_ab;
+cov_b=[200^2 200^2];
 
 % Redefino A y C suponiendo var de estado z = [x; b]
 Ad_b = [Ad zeros(cant_estados,dim); zeros(dim,cant_estados) eye(dim)];
@@ -187,13 +188,13 @@ hold on
 grid
 plot(yk(:,1),yk(:,2))
 plot(x(1,:),x(2,:),'m','LineWidth',2)
-plot(xb(1,:),xb(2,:),'LineWidth',2, 'color', myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
+plot(xb(1,:),xb(2,:),'--b','LineWidth',2)
 title('Estimacion');
 if(EsMatlab == 1)
-    legend('Medido','Estimación sin estimar sesgo', 'Estimada estimando sesgo','Estado','location','SouthEast');
+    legend('Medido','Estimación sin estimar sesgo','Estado','Estimada estimando sesgo','location','SouthEast');
 else 
-    legend(['Medido';'Estimación sin estimar sesgo'; 'Estimada estimando sesgo';'Estado'],'location','SouthEast');
+    legend(['Medido';'Estimación sin estimar sesgo';'Estado';'Estimada estimando sesgo'],'location','SouthEast');
 end
 xlabel = 'Tiempo [s]';
 ylabel = 'Posición [m]';
@@ -312,6 +313,6 @@ end
 
 
 % Observabilidad
-Obs = obsv(Ad,C);
+Obs = obsv(Ad_b,C_b);
 rango_obs = rank(Obs);
 estados_no_observables = (cant_estados) - rango_obs
