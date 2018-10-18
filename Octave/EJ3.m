@@ -1,6 +1,6 @@
 config_m;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% EJ KALMAN - Estimación con distintos valores iniciales
+% EJ KALMAN - Estimacion con distintos valores iniciales
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 datos_str = load('datos.mat');
@@ -10,8 +10,8 @@ Tiempo = datos_str.tiempo;
 Pos = datos_str.Pos;
 Vel = datos_str.Vel;
 
-dim = 2;			% Se considera sólo x e y
-tipos_variables = 3;		% Posición, Velocidad, Aceleración
+dim = 2;			% Se considera solo x e y
+tipos_variables = 3;		% Posicion, Velocidad, Aceleracion
 cant_mediciones = length(Pos);
 cant_estados = tipos_variables * dim;
 
@@ -77,7 +77,7 @@ M_eta = [randn(dim,cant_mediciones)*sigma_etap*bool_p;
        	randn(dim,cant_mediciones)*sigma_etaa*bool_a];
 
 yk = C * [Pos(:,1:dim) Vel(:,1:dim) Acel(:,1:dim)]' + (C*M_eta);
-yk = yk'; % Así tiene la forma de Pos
+yk = yk'; % Asi tiene la forma de Pos
 
 R = diag([ones(1,dim*bool_p)*sigma_etap^2 ones(1,dim*bool_v)*sigma_etav^2 ones(1,dim*bool_a)*sigma_etaa^2]);
 
@@ -90,17 +90,17 @@ Pk1_k1 = P;
 g = yk(1,:)';
 
 for i=1:cant_mediciones-1
-	% Predicción
+	% Prediccion
 	xk_k1 = Ad * xk1_k1;
 	Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
 	gk = [innovaciones(yk(i,:),C,xk_k1)];
 
-	% Corrección
+	% Correccion
 	Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
 	xk_k = xk_k1 + Kk*(gk);
 	Pk_k = (eye(cant_estados) - Kk*C) * Pk_k1;
 	
-	% Actualización
+	% Actualizacion
 	xk1_k1 = xk_k;
 	Pk1_k1 = Pk_k;
 
@@ -132,18 +132,18 @@ for l = 1:4
     g = yk(1,:)';
     
 	for i = 1:cant_mediciones-1
-		% Predicción
+		% Prediccion
 		xk_k1 = Ad * xk1_k1;
 		Pk_k1 =	Ad * Pk1_k1 * Ad' + Bk1 * Qd * Bk1';
         gk = [innovaciones(yk(i,:),C,xk_k1)];
 	
-		% Corrección
+		% Correccion
 		Kk = Pk_k1 * C'*(R + C*Pk_k1*C')^-1;
 		xk_k = xk_k1 + Kk*(yk(i,:)' - C*xk_k1);
 		Pk_k = (eye(dim*3) - Kk*C) * Pk_k1;
 		
 	
-		% Actualización
+		% Actualizacion
 		xk1_k1 = xk_k;
 		Pk1_k1 = Pk_k;
 	
@@ -178,15 +178,15 @@ plot(x(1,:),x(2,:),'--b','LineWidth',2)
 %	plot(x2(1,:),x2(2,:),'-','LineWidth',3,'color',[0.8 0.8 1])
 %	plot(x3(1,:),x3(2,:),'-','LineWidth',3,'color',[0.4 0.4 0.4])
 %	plot(x4(1,:),x4(2,:),'-','LineWidth',3,'color',[0.8 0.2 1])
-title('Estimación');
+title('Estimacion');
 if(EsMatlab == 1)
     legend('Medida','Real','Estimada','location','SouthEast');
-    xlabel('Posición x');
-    ylabel('Posición y');
+    xlabel('Posicion x');
+    ylabel('Posicion y');
 else
     legend(['Medida';'Real','Estimada'],'location','SouthEast');
-    xlabel('Posición $x$ [\si{\m}]');
-    ylabel('Posición $y$ [\si{\m}]');
+    xlabel('Posicion $x$ [\si{\m}]');
+    ylabel('Posicion $y$ [\si{\m}]');
 end
 
 % Grafico de medida, estimada, ruidosa
@@ -197,22 +197,22 @@ grid
 plot(yk(:,1),yk(:,2),'color',myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(x1(1,:),x1(2,:),'--b','LineWidth',2)
-title('Estimación');
+title('Estimacion');
 if(EsMatlab == 1)
     legend('Medida','Real','Estimada','location','SouthEast');
-    xlabel('Posición x');
-    ylabel('Posición y');
+    xlabel('Posicion x');
+    ylabel('Posicion y');
 else
     legend(['Medida';'Real','Estimada'],'location','SouthEast');
-    xlabel('Posición $x$ [\si{\m}]');
-    ylabel('Posición $y$ [\si{\m}]');
+    xlabel('Posicion $x$ [\si{\m}]');
+    ylabel('Posicion $y$ [\si{\m}]');
 end
 
 % figure;
 subplot(222)
 plot(x'-x1');
 xlim([0 150]);
-title('Error de estimación');
+title('Error de estimacion');
 xlabel('Tiempo');
 legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
 
@@ -246,22 +246,22 @@ grid
 plot(yk(:,1),yk(:,2),'color',myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(x2(1,:),x2(2,:),'--b','LineWidth',2)
-title('Estimación');
+title('Estimacion');
 if(EsMatlab == 1)
     legend('Medida','Real','Estimada','location','SouthEast');
-    xlabel('Posición x');
-    ylabel('Posición y');
+    xlabel('Posicion x');
+    ylabel('Posicion y');
 else
     legend(['Medida';'Real','Estimada'],'location','SouthEast');
-    xlabel('Posición $x$ [\si{\m}]');
-    ylabel('Posición $y$ [\si{\m}]');
+    xlabel('Posicion $x$ [\si{\m}]');
+    ylabel('Posicion $y$ [\si{\m}]');
 end
 
 % figure;
 subplot(222)
 plot(x'-x2');
 xlim([0 150]);
-title('Error de estimación');
+title('Error de estimacion');
 xlabel('Tiempo');
 legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
 
@@ -295,22 +295,22 @@ grid
 plot(yk(:,1),yk(:,2),'color',myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(x3(1,:),x3(2,:),'--b','LineWidth',2)
-title('Estimación');
+title('Estimacion');
 if(EsMatlab == 1)
     legend('Medida','Real','Estimada','location','SouthEast');
-    xlabel('Posición x');
-    ylabel('Posición y');
+    xlabel('Posicion x');
+    ylabel('Posicion y');
 else
     legend(['Medida';'Real','Estimada'],'location','SouthEast');
-    xlabel('Posición $x$ [\si{\m}]');
-    ylabel('Posición $y$ [\si{\m}]');
+    xlabel('Posicion $x$ [\si{\m}]');
+    ylabel('Posicion $y$ [\si{\m}]');
 end
 
 % figure;
 subplot(222)
 plot(x'-x3');
 xlim([0 150]);
-title('Error de estimación');
+title('Error de estimacion');
 xlabel('Tiempo');
 legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
 
@@ -344,22 +344,22 @@ grid
 plot(yk(:,1),yk(:,2),'color',myGreen)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(x4(1,:),x4(2,:),'--b','LineWidth',2)
-title('Estimación');
+title('Estimacion');
 if(EsMatlab == 1)
     legend('Medida','Real','Estimada','location','SouthEast');
-    xlabel('Posición x');
-    ylabel('Posición y');
+    xlabel('Posicion x');
+    ylabel('Posicion y');
 else
     legend(['Medida';'Real','Estimada'],'location','SouthEast');
-    xlabel('Posición $x$ [\si{\m}]');
-    ylabel('Posición $y$ [\si{\m}]');
+    xlabel('Posicion $x$ [\si{\m}]');
+    ylabel('Posicion $y$ [\si{\m}]');
 end
 
 % figure;
 subplot(222)
 plot(x'-x4');
 xlim([0 150]);
-title('Error de estimación');
+title('Error de estimacion');
 xlabel('Tiempo');
 legend('e_p_x','e_p_y','e_v_x','e_v_y','e_a_x','e_a_y');
 

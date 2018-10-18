@@ -1,46 +1,43 @@
 
-	Es importante recalcar que la ganancia de Kalman $K_k$ es distinta para cada instante $k$. Cuando el sistema es variante en el tiempo, el filtro se adapta a las condiciones de dinámica y ruido instante a instante. Por otro lado, cuando el sistema es invariante en el tiempo puede demostrarse que tanto la matriz $K_k$, como la matriz $P_k$, convergen para tiempo infinito. Es decir:
+	El filtro de Kalman obtiene la mejor estimación en el sentido del error cuadrático medio. Esto quiere decir que cuanto mayor sea la varianza del ruido de proceso, más importancia le dará a las mediciones. De la misma manera, cuanto mayor sea la varianza del ruido de medición, mayor importancia le dará al modelo en el espacio de estados para poder realizar la estimación. El objetivo de este Sección es ver cómo se modifica la estimación cambiando la magnitud de la matriz de covarianza del ruido de proceso.
 	
-	\begin{equation*}
-		K_k \longrightarrow K
-	\end{equation*}
+	\subsection{$R^{'}\gg R$}
 	
-	\begin{equation*}
-		P_k \longrightarrow P
-	\end{equation*}
-	
-	para $k \rightarrow \infty$. Dichas matrices pueden computarse mediante ecuaciones aritméticas discretas de Riccati (DARE). Es decir, $P$ debe cumplir:
-	
-	\begin{equation*}
-		P = A P A^{*} - A P C^{*} (R + C P C^{*})^{-1} C P A + B Q B^{*}
-	\end{equation*}
-	
-	Por otro lado la ganancia de Kalman puede calcularse como:
-	
-	\begin{equation*}
-		K = P C^{*} (R + C P C^{*})^{-1}
-	\end{equation*}
-	
-	Dadas estas matrices, surge la posibilidad de implementar una modificación al algoritmo de Kalman para que en lugar de utilizar las matrices calculadas instante a instante siempre utilice las matrices a las que va a converger, suponiendo que el sistema es invariante en el tiempo. Dicho algoritmo tiene la ventaja de que posee menos procesamiento en tiempo real, dado que las matrices $K$ y $P$ pueden computarse en tiempo de compilación y guardarse fijas en la memoria. Este algoritmo no será óptimo, pero puede demostrarse que la versión modificada convergerá a la versión original con rapidez exponencial, siendo más los beneficios que trae que los inconvenientes. El objetivo de este punto es comparar las dos variantes y demostrar lo expuesto. En la figura \ref{fig:ej3f_cov} podemos ver el resultado de la estimación. En linea punteada azul puede verse que la estimación del algoritmo modificado comienza desviada de la trayectoria, pero rapidamente converge a la misma. 
+	\begin{figure}[H]
+		\centering
+		%\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/graf_ej6_R1.pdf}
+		\includegraphics[scale=0.5,trim={6,5cm 0 0 0}]{Figuras/graf_ej6_R1.pdf}
+		\caption{Estimación de Trayectoria - Matriz de Covarianza Mayor}
+		\label{fig:ej5r1}
+	\end{figure}
 
 	\begin{figure}[H]
 		\centering
-		%\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/graf_ej5.pdf}
-		\includegraphics[scale=0.5,trim={6,5cm 0 0 0}]{Figuras/graf_ej5.pdf}
-		\caption{Estimación de Trayectoria}
-		\label{fig:ej6_cov}
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/covinn_ej6_R1.pdf}
+		\caption{Autocorrelación de Innovaciones - Matriz de Covarianza Mayor}
+		\label{fig:ej5r1_innov}
+	\end{figure}
+
+	
+	\subsection{$R^{'}\ll R$}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.5,trim={6,5cm 0 0 0}]{Figuras/graf_ej6_R2.pdf}
+		\caption{Estimación de Trayectoria - Matriz de Covarianza Menor}
+		\label{fig:ej5r2}
 	\end{figure}
 	
-	%Esta otra figura no se a que corresponde.
-	%\begin{figure}[H]
-	%	\centering
-	%	\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/covinn_ej5.pdf}
-	%	\caption{Correlación De Innovaciones}
-	%	\label{fig:ej6_cov}
-	%\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/covinn_ej6_R2.pdf}
+		\caption{Autocorrelación de Innovaciones - Matriz de Covarianza Menor}
+		\label{fig:ej5r2_innov}
+	\end{figure}
 	
-	\subsection{Script}
+	\subsection{Análisis de los resultados}
+	En las Figuras \ref{fig:ej5r1} y \ref{fig:ej5r2} se observan las estimaciones de las trayectorias para una matriz de covarianza del ruido de proceso $100$ veces mayor y $100$ veces menor a la original, respectivamente. En el caso de la matriz mayor, el algoritmo le da menos importancia a la dinámica y más a las mediciones. De esta manera, otorga más peso a las mediciones y el error de la trayectoria respecto de la real es mayor que usando una matriz menor. El efecto es similar al presentado en la Sección \ref{sec:ej3}, donde al variar $P$, varía $K$ y en consecuencia se sigue en mayor o menor medida a las mediciones.\\
 
-	A continuación incluimos el script que realiza la estimación.
-	
-	%\lstinputlisting[]{../Octave/EJ5.m}
+	Sin embargo, la magnitud de $R$ afecta a la autocorrelación de las innovaciones. En las Figuras \ref{fig:ej5r1_innov} y \ref{fig:ej5r2_innov} se observan las autocorrelaciones de las innovaciones. Cuanto mayor es la matriz de ruido de proceso, el proceso es menos blanco, y por consiguente se concluye que la estimación es peor.
+
+

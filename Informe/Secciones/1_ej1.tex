@@ -13,16 +13,16 @@
 				\vect{y}(t) = C\: \vect{x}(t) + \vect{\eta}(t)
 			\end{cases}
 		\end{equation*}
-	donde $\vect{\xi}(t)$ es el ruido de proceso y $\vect{\eta}(t)$ el ruido de medición. La matriz $A$ contiene la información de la dinámica del sistema, $B$ es la matriz de entrada del ruido de proceso, y la matriz de salida es $C$, que conecta los estados con las mediciones. En la figura \ref{fig:bloques} puede verse el diagrama en bloques del modelo.
+	donde $\vect{\xi}(t)$ es el ruido de proceso y $\vect{\eta}(t)$ el ruido de medición. La matriz $A$ contiene la información de la dinámica del sistema, $B$ es la matriz de entrada del ruido de proceso, y la matriz de salida es $C$, que conecta los estados con las mediciones. En la Figura \ref{fig:bloques} puede verse el diagrama en bloques del modelo.
 	\graficarEPS{0.6}{bloques}{Diagrama en bloques del modelo.}{fig:bloques}
 	
-	Para poder tratar el sistema en forma digital, es necesario definir un período de muestreo $T$, que en nuestro caso es igual a la unidad. De esta forma el modelo en tiempo discreto es el siguiente:
+	Para poder tratar el sistema en forma digital, es necesario definir un período de muestreo $T$, que en este caso es igual a la unidad. De esta forma el modelo en tiempo discreto es el siguiente:
 	
 		\begin{equation*}
 			\Sigma_{d}:
 			\begin{cases}
-				\vect{x_{n + 1}} = A_{d}\: \vect{x_{n}} + B_{d} \: \vect{\xi_{n}} \\
-				\vect{y_{n}} = C_{d}\: \vect{x_{n}} + \vect{\eta_{n}}
+				\vect{x}_{n + 1} = A_{d}\: \vect{x}_{n} + B_{d} \: \vect{\xi}_{n} \\
+				\vect{y}_{n} = C_{d}\: \vect{x}_{n} + \vect{\eta}_{n}
 			\end{cases}
 		\end{equation*}
 		
@@ -38,10 +38,8 @@
 			C_{d} = \begin{bmatrix} I & 0 & 0 \\[0.3em] 0 & I & 0 \\[0.3em] 0 & 0 & I \end{bmatrix}
 		\end{equation*}
 		
-		Para el caso en que alguna de las variables no se esté midiendo, será necesario eliminar alguna de las tres filas de la matriz. 
-		\Juan{Yo sacaría esta oración}
-		La primera, segunda o tercera, dependiendo de posicion, velocidad y aceleración respectivamente. 
-		En este modeo, la matriz $B$ se toma como la matriz identidad.
+		Para el caso en que alguna de las variables no se esté midiendo, será necesario eliminar alguna de las tres filas (de $2\times2$) de la matriz. En concreto se omite la primera, segunda o tercera fila, dependiendo si no se sensase posicion, velocidad o aceleración respectivamente. 
+		En este modelo, la matriz $B$ se toma como la matriz identidad.
 	En cuanto a los ruidos, se hace la suposición que se tratan de ruidos blancos con matrices de covarianza $Q_{d}$ para el ruido de proceso y $R_{d}$ para el ruido de medición. Cabe aclarar que el hecho de que se trate de ruidos blancos no implica que $Q_{d}$ y $R_{d}$ sean diagonales. Ambas matrices dan información de la correlación componente a componente de los vectores de ruido.
 	
 \subsection{Inciso b}
@@ -50,7 +48,7 @@
 
 	\begin{lstlisting}
 	
-config_m;
+config_m;			
 
 datos_str = load('datos.mat');
 
@@ -76,10 +74,10 @@ T = 1;					% Suponiendo equiespaciado
 I = eye(dim);
 Ad =[I		I*T	(T^2)/2*I;
      I*0	I	T*I;
-     I*0	I*0	I;];
+     I*0	I*0	I];
 
 % Covarianza del ruido de proceso
-Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv,ones(1,dim)*var_xia]);
+Qd = diag([ones(1,dim)*var_xip, ones(1,dim)*var_xiv, ones(1,dim)*var_xia]);
 
 	\end{lstlisting}
 	
