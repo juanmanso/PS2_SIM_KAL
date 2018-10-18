@@ -186,7 +186,7 @@ h1=figure;
 subplot(221)
 hold on
 grid
-plot(yk(:,1),yk(:,2))
+plot(yk(:,1),yk(:,2),'c')
 plot(x(1,:),x(2,:),'m','LineWidth',2)
 plot(Pos(:,1),Pos(:,2),'r','LineWidth',2)
 plot(xb(1,:),xb(2,:),'--b','LineWidth',2)
