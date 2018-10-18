@@ -6,13 +6,13 @@
 	Por otro lado, la técnica funciona bien cuando los ruidos son de media nula. Si la media de los ruidos de mediciones es desconocida y no nula, la técnica de incluirla como un estado a estimar tiene sus limitaciones, como ya se dijo, ligadas a la observabilidad. De los casos vistos, son pocos en los que se puede estimar las medias en forma satisfactoria.
 	
 	\paragraph{}
-	Se comprobó además el funcionamiento del algoritmo cuando no se puede hacer una buena estadistica del estado inicial. Si no se conoce el mismo o su media con certeza, basta con indicarle en la matriz $P$ que el dato es poco confiable para que el algoritmo procese y converja debidamente a la trayectoria.
+	Se comprobó además el funcionamiento del algoritmo cuando no se puede hacer una buena estadística del estado inicial. Si no se conoce el mismo o su media con certeza, basta con indicarle en la matriz $P$ que el dato es poco confiable para que el algoritmo procese y converja debidamente a la trayectoria.
 	
 	\paragraph{}
-	El algoritmo basado en usar las matrices estacionarias en lugar de calcular la ganancia de Kalman instante a instante funciona razonablemente bien en comparación con el algoritmo original. Bastó con un corto intervalo de tiempo para que la trayectoria siguiera a la original, y además, el algoritmo modificado posee la misma inmunidad al ruido que el original.
+	El algoritmo basado en usar las matrices estacionarias en lugar de calcular la ganancia de Kalman instante a instante funciona razonablemente bien en comparación con el algoritmo original. Bastó con un corto intervalo de tiempo para que la trayectoria siguiera a la original, y además el algoritmo modificado posee la misma inmunidad al ruido que el original.
 	
 	\paragraph{}
 	La variante del algoritmo de Kalman con pérdida de datos, modificando la matriz $C$, es una herramienta muy útil ya que no todo el tiempo se tienen mediciones de todos los sensores. Contar con un algoritmo que realice una síntesis de datos que llegan de varios sensores, en tiempos diferentes, es de suma utilidad práctica. La posibilidad de poder modificar la matriz $C$ instante a instante está ligada a otra ventaja del filtro de Kalman poco explorada en el trabajo que es la posibilidad de tratar con sistemas variantes en el tiempo.
 	
 	\paragraph{}
-	En resumen, el filtro de Kalman es de suma importancia práctica dado que se comporta bien en situaciones más reales que ideales. En ellas los factores condicionantes son: trabajar con sistemas que varian en el tiempo (Aunque en este trabajo no se exploró en profundidad esta ventaja), trabajar con señales en presencia de ruido, y sintetizar información de distintos sensores que miden diferentes cosas, y con errores distintos, en un único resultado a la salida del algoritmo.
+	En resumen, el filtro de Kalman es de suma importancia práctica dado que se comporta bien en situaciones más reales que ideales. En ellas los factores condicionantes son: trabajar con sistemas que varian en el tiempo (aunque en este trabajo no se exploró en profundidad esta ventaja), trabajar con señales en presencia de ruido, y sintetizar información de distintos sensores que miden diferentes cosas, y con errores distintos, en un único resultado a la salida del algoritmo.
