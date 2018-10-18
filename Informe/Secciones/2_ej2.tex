@@ -45,13 +45,13 @@
 					P_{k/k - 1} \leftarrow Ad_{k - 1} P_{k - 1 / k - 1} Ad_{k - 1}^{*} + Bd_{k - 1} Q_{k - 1} Bd_{k - 1}^{*}
 				\end{equation*}
 			\paragraph{Corrección}
-				Es la etapa en la cual se correge la predicción con el valor de la medición. Para ello se necesita calcular la matriz de ganancia de Kalman $K_{k}$:
+				Es la etapa en la cual se corrige la predicción con el valor de la medición. Para ello se necesita calcular la matriz de ganancia de Kalman $K_{k}$:
 				
 				\begin{equation*}
 					K_{k} \leftarrow P_{k / k - 1} Cd_{k}^{*} (Cd_{k} P_{k/k - 1} Cd_{k}^{*} + R_{k})^{-1}
 				\end{equation*}
 				
-				Luego se correge:
+				Luego se corrige:
 				
 				\begin{equation*}
 					\vect{x_{k/k}} \leftarrow \vect{x_{k/k - 1}} + K_{k} (y_{k} - Cd_{k} \vect{x_{k/k - 1}})
@@ -79,12 +79,13 @@
 
 		\begin{figure}[H]
 			\centering
-			\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/graf_ej2a.pdf}
+			%\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/graf_ej2a.pdf}
+			\includegraphics[scale=0.5,trim={6,5cm 0 0 0}]{Figuras/graf_ej2a.pdf}
 			\caption{Caso: Medición De Posición}
 			\label{fig:ej2a}
 		\end{figure}
 		
-		En la figura \ref{fig:ej2a_innov} vemos la correlación de las innovaciones, puede verse de que se aproximan a un proceso blanco.
+		En la figura \ref{fig:ej2a_innov} vemos la correlación de las innovaciones, donde se observa que se aproximan a un proceso blanco.
 		
 		\begin{figure}[H]
 			\centering
@@ -99,12 +100,12 @@
 		
 		\begin{figure}[H]
 			\centering
-			\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/graf_ej2b.pdf}
+			\includegraphics[scale=0.5,trim={6,5cm 0 0 0}]{Figuras/graf_ej2b.pdf}
 			\caption{Caso: Medición De Velocidad}
 			\label{fig:ej2b}
 		\end{figure}
 		
-		En la figura \ref{fig:ej2b_innov} vemos la correlación de las innovaciones, puede verse de que se aproximan a un proceso blanco.
+		En la figura \ref{fig:ej2b_innov} vemos la correlación de las innovaciones, donde se observa que se aproximan a un proceso blanco.
 		
 		\begin{figure}[H]
 			\centering
@@ -117,12 +118,12 @@
 		
 		\begin{figure}[H]
 			\centering
-			\includegraphics[width=1.0\textwidth,keepaspectratio]{Figuras/graf_ej2c.pdf}
+			\includegraphics[scale=0.5,trim={6,5cm 0 0 0}]{Figuras/graf_ej2c.pdf}
 			\caption{Caso: Medición De Aceleración}
 			\label{fig:ej2c}
 		\end{figure}
 		
-		En la figura \ref{fig:ej2c_innov} vemos la correlación de las innovaciones, puede verse de que se aproximan a un proceso blanco.
+		En la figura \ref{fig:ej2c_innov} vemos la correlación de las innovaciones, donde se observa que se aproximan a un proceso blanco.
 		
 		\begin{figure}[H]
 			\centering
